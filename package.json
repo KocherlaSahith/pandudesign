@@ -1,0 +1,24 @@
+{
+  "name": "sopa-landing",
+  "version": "1.0.0",
+  "description": "SOPA - Soybean Processors Association Platform Landing Page",
+  "main": "sopa-landing.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "vercel build",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "sopa",
+    "soybean",
+    "processors",
+    "association",
+    "landing",
+    "vercel"
+  ],
+  "author": "SOPA Team",
+  "license": "MIT",
+  "devDependencies": {
+    "vercel": "^latest"
+  }
+}

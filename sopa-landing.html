@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SOPA — Soybean Processors Association Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --dark:    #1E1709;
+      --sidebar: #2D2416;
+      --card-bg: #3B2E18;
+      --gold:    #F5B800;
+      --gold-dk: #C99500;
+      --green:   #2E7D52;
+      --green-lt:#E6F4ED;
+      --light:   #FAF8F4;
+      --muted:   #7A6E5F;
+      --border:  rgba(245,184,0,0.15);
+      --white:   #FFFFFF;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--light);
+      color: var(--dark);
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5vw;
+      height: 68px;
+      background: rgba(30,23,9,0.95);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      animation: slideDown .7s ease both;
+    }
+
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 38px; height: 38px;
+      background: var(--gold);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1rem; color: var(--dark);
+      letter-spacing: -.5px;
+    }
+    .logo-text {
+      font-size: .95rem; font-weight: 700;
+      color: var(--white); letter-spacing: .04em;
+      line-height: 1.15;
+    }
+    .logo-text span { display: block; font-size: .65rem; font-weight: 400; color: var(--gold); letter-spacing: .12em; text-transform: uppercase; }
+
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: .82rem; color: rgba(255,255,255,.6); text-decoration: none; letter-spacing: .06em; text-transform: uppercase; transition: color .2s; }
+    .nav-links a:hover { color: var(--gold); }
+
+    .nav-btn {
+      background: var(--gold); color: var(--dark);
+      padding: .55rem 1.4rem; border-radius: 6px;
+      font-size: .82rem; font-weight: 700; letter-spacing: .05em;
+      text-decoration: none; text-transform: uppercase;
+      transition: background .2s, transform .2s;
+    }
+    .nav-btn:hover { background: #ffd040; transform: translateY(-1px); }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      background: var(--dark);
+      display: grid; grid-template-columns: 1fr 1fr;
+      padding-top: 68px; overflow: hidden; position: relative;
+    }
+
+    /* grain texture */
+    .hero::before {
+      content: ''; position: absolute; inset: 0; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+      opacity: .4; pointer-events: none;
+    }
+
+    /* golden glow */
+    .hero::after {
+      content: ''; position: absolute;
+      width: 700px; height: 700px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(245,184,0,.18) 0%, transparent 70%);
+      top: -200px; left: -100px; pointer-events: none; z-index: 0;
+    }
+
+    .hero-left {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 7rem 5vw 7rem 7vw; position: relative; z-index: 1;
+    }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(245,184,0,.12); border: 1px solid rgba(245,184,0,.3);
+      color: var(--gold); padding: .4rem 1rem; border-radius: 100px;
+      font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+      margin-bottom: 1.8rem; width: fit-content;
+      animation: fadeUp .8s .2s ease both;
+    }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: pulse 2s infinite; }
+
+    .hero-title {
+      font-family: 'Lora', serif;
+      font-size: clamp(2.8rem, 4.5vw, 5rem);
+      font-weight: 600; line-height: 1.1; color: var(--white);
+      margin-bottom: 1.5rem;
+      animation: fadeUp .8s .35s ease both;
+    }
+    .hero-title .accent { color: var(--gold); font-style: italic; }
+
+    .hero-desc {
+      font-size: 1.05rem; line-height: 1.8; color: rgba(255,255,255,.6);
+      max-width: 480px; margin-bottom: 2.8rem;
+      animation: fadeUp .8s .5s ease both;
+    }
+
+    .hero-btns {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      animation: fadeUp .8s .65s ease both;
+    }
+    .btn-gold {
+      background: var(--gold); color: var(--dark);
+      padding: .85rem 2rem; border-radius: 8px;
+      font-weight: 700; font-size: .9rem; letter-spacing: .04em;
+      text-decoration: none; transition: all .2s;
+      box-shadow: 0 4px 20px rgba(245,184,0,.35);
+    }
+    .btn-gold:hover { background: #ffd040; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(245,184,0,.45); }
+    .btn-outline {
+      border: 1.5px solid rgba(255,255,255,.25); color: rgba(255,255,255,.8);
+      padding: .85rem 2rem; border-radius: 8px;
+      font-weight: 500; font-size: .9rem;
+      text-decoration: none; transition: all .2s;
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+    .hero-stats {
+      display: flex; gap: 2.5rem; margin-top: 3.5rem; padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,.08);
+      animation: fadeUp .8s .8s ease both;
+    }
+    .stat-val { font-family: 'Lora', serif; font-size: 2rem; font-weight: 600; color: var(--gold); display: block; }
+    .stat-lbl { font-size: .72rem; color: rgba(255,255,255,.45); text-transform: uppercase; letter-spacing: .1em; margin-top: .2rem; display: block; }
+
+    /* ─── HERO RIGHT — mockup ─── */
+    .hero-right {
+      display: flex; align-items: center; justify-content: center;
+      padding: 5rem 4vw 5rem 2vw; position: relative; z-index: 1;
+      animation: fadeIn 1s .5s ease both;
+    }
+
+    .mockup-wrap {
+      width: 100%; max-width: 520px;
+      background: #FAF8F4;
+      border-radius: 16px;
+      box-shadow: 0 40px 100px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.08);
+      overflow: hidden;
+    }
+    .mockup-bar {
+      background: var(--sidebar);
+      padding: .7rem 1rem;
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .mockup-dot.r { background: #ff5f57; }
+    .mockup-dot.y { background: #febc2e; }
+    .mockup-dot.g { background: #28c840; }
+    .mockup-url {
+      flex: 1; margin-left: .5rem;
+      background: rgba(255,255,255,.08); border-radius: 4px;
+      padding: .25rem .8rem; font-size: .72rem; color: rgba(255,255,255,.4);
+    }
+
+    .mockup-body { display: flex; }
+    .mockup-sidebar {
+      width: 56px; background: var(--sidebar);
+      display: flex; flex-direction: column; align-items: center; padding: 1rem 0; gap: 1.2rem;
+    }
+    .sb-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,.06); color: rgba(255,255,255,.5); font-size: .95rem;
+      cursor: pointer; transition: background .2s;
+    }
+    .sb-icon.active { background: var(--gold); color: var(--dark); }
+
+    .mockup-content { flex: 1; padding: 1rem; }
+    .mc-title { font-size: .8rem; font-weight: 700; color: var(--dark); margin-bottom: .8rem; }
+
+    .mc-cards { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-bottom: .8rem; }
+    .mc-card {
+      background: var(--card-bg); border-radius: 8px; padding: .7rem;
+      color: white;
+    }
+    .mc-card-label { font-size: .58rem; text-transform: uppercase; letter-spacing: .08em; color: rgba(255,255,255,.5); }
+    .mc-card-val { font-size: 1.1rem; font-weight: 700; color: var(--gold); margin-top: .15rem; }
+
+    .mc-row { display: flex; gap: .5rem; margin-bottom: .8rem; }
+    .mc-chart-box {
+      flex: 1.5; background: #fff8e6; border-radius: 8px; padding: .7rem;
+      border: 1px solid rgba(245,184,0,.2);
+    }
+    .mc-chart-label { font-size: .6rem; font-weight: 600; color: var(--muted); margin-bottom: .5rem; }
+    .chart-bars { display: flex; align-items: flex-end; gap: 3px; height: 40px; }
+    .bar { flex: 1; border-radius: 2px 2px 0 0; background: var(--gold); opacity: .6; transition: opacity .2s; }
+    .bar:hover { opacity: 1; }
+    .bar.hi { opacity: 1; }
+
+    .mc-donut-box {
+      flex: 1; background: #f0faf5; border-radius: 8px; padding: .7rem;
+      border: 1px solid rgba(46,125,82,.2); display: flex; flex-direction: column; align-items: center;
+    }
+    .mc-donut-label { font-size: .6rem; font-weight: 600; color: var(--muted); margin-bottom: .3rem; align-self: flex-start; }
+    .donut-svg { width: 52px; height: 52px; }
+
+    .mc-table { width: 100%; }
+    .mc-table-hdr { display: grid; grid-template-columns: 1fr 1fr 1fr 0.8fr; font-size: .55rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding: .3rem 0; border-bottom: 1px solid rgba(0,0,0,.06); margin-bottom: .3rem; }
+    .mc-table-row { display: grid; grid-template-columns: 1fr 1fr 1fr 0.8fr; font-size: .6rem; color: #444; padding: .3rem 0; border-bottom: 1px solid rgba(0,0,0,.04); align-items: center; }
+    .tag-approved { background: var(--green-lt); color: var(--green); padding: .15rem .5rem; border-radius: 100px; font-size: .55rem; font-weight: 600; }
+    .tag-pending  { background: #FFF8E1; color: #B8860B; padding: .15rem .5rem; border-radius: 100px; font-size: .55rem; font-weight: 600; }
+
+    /* ─── MARQUEE ─── */
+    .marquee { overflow: hidden; background: var(--sidebar); padding: .9rem 0; border-top: 1px solid rgba(245,184,0,.2); border-bottom: 1px solid rgba(245,184,0,.2); }
+    .marquee-track { display: flex; gap: 3rem; animation: marquee 28s linear infinite; white-space: nowrap; }
+    .mq-item { font-size: .7rem; color: rgba(255,255,255,.45); letter-spacing: .15em; text-transform: uppercase; flex-shrink: 0; display: flex; align-items: center; gap: 1rem; }
+    .mq-sep { color: var(--gold); font-size: .8rem; }
+
+    /* ─── ABOUT STRIP ─── */
+    .about {
+      background: var(--white);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+    }
+
+    .about-img {
+      position: relative; overflow: hidden; min-height: 420px;
+      background: var(--card-bg);
+    }
+    /* Soybean field illustration via CSS */
+    .about-img-inner {
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(160deg, #1a3a1a 0%, #2d5a1b 40%, #4a8c28 70%, #6ab832 100%);
+    }
+    .about-img-inner::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500'%3E%3Cellipse cx='100' cy='480' rx='60' ry='80' fill='%2356a017' opacity='.7'/%3E%3Cellipse cx='200' cy='460' rx='70' ry='100' fill='%234a9010' opacity='.8'/%3E%3Cellipse cx='320' cy='470' rx='55' ry='90' fill='%2360b01a' opacity='.75'/%3E%3Cellipse cx='450' cy='455' rx='75' ry='110' fill='%2352a015' opacity='.8'/%3E%3Cellipse cx='580' cy='465' rx='65' ry='95' fill='%2358a818' opacity='.7'/%3E%3Cellipse cx='700' cy='450' rx='80' ry='120' fill='%234e9c12' opacity='.8'/%3E%3Cellipse cx='780' cy='475' rx='50' ry='75' fill='%2362b01c' opacity='.65'/%3E%3Ccircle cx='150' cy='300' r='8' fill='%23c8a000' opacity='.9'/%3E%3Ccircle cx='280' cy='280' r='10' fill='%23d4aa00' opacity='.9'/%3E%3Ccircle cx='400' cy='295' r='7' fill='%23c0980a' opacity='.85'/%3E%3Ccircle cx='520' cy='275' r='9' fill='%23ccaa00' opacity='.9'/%3E%3Ccircle cx='640' cy='285' r='8' fill='%23c8a400' opacity='.85'/%3E%3Crect x='0' y='400' width='800' height='100' fill='%23a0700a' opacity='.3'/%3E%3C/svg%3E") center/cover no-repeat;
+    }
+    .about-img-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, transparent 70%, var(--white));
+    }
+    .about-img-badge {
+      position: absolute; bottom: 2rem; left: 2rem;
+      background: var(--gold); color: var(--dark);
+      padding: .8rem 1.2rem; border-radius: 10px;
+      font-weight: 700; font-size: 1.3rem; line-height: 1.2;
+      box-shadow: 0 8px 30px rgba(245,184,0,.4);
+    }
+    .about-img-badge small { display: block; font-size: .65rem; font-weight: 500; margin-top: .1rem; }
+
+    .about-text {
+      padding: 5rem 4vw 5rem 3vw;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .section-label {
+      font-size: .72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .18em; color: var(--gold); margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Lora', serif;
+      font-size: clamp(1.8rem, 2.5vw, 2.6rem);
+      font-weight: 600; line-height: 1.2; color: var(--dark); margin-bottom: 1.2rem;
+    }
+    .section-body {
+      font-size: .97rem; line-height: 1.85; color: var(--muted); margin-bottom: 2rem;
+    }
+
+    .check-list { list-style: none; display: flex; flex-direction: column; gap: .8rem; }
+    .check-list li {
+      display: flex; gap: .8rem; align-items: flex-start;
+      font-size: .9rem; color: #4a3e2e;
+    }
+    .check-list li::before {
+      content: '✓';
+      width: 20px; height: 20px; flex-shrink: 0;
+      background: var(--green-lt); color: var(--green);
+      border-radius: 50%; font-size: .65rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 2px;
+    }
+
+    /* ─── FEATURES ─── */
+    .features {
+      padding: 7rem 7vw;
+      background: var(--light);
+    }
+    .features-header { text-align: center; margin-bottom: 4rem; }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+
+    .feat-card {
+      background: var(--white);
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: 14px; padding: 2rem;
+      transition: transform .3s, box-shadow .3s;
+      position: relative; overflow: hidden;
+    }
+    .feat-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--gold); transform: scaleX(0); transform-origin: left;
+      transition: transform .3s;
+    }
+    .feat-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,.1); }
+    .feat-card:hover::before { transform: scaleX(1); }
+
+    .feat-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: rgba(245,184,0,.12); color: var(--gold-dk);
+      font-size: 1.4rem; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.2rem;
+    }
+    .feat-title { font-size: 1rem; font-weight: 700; color: var(--dark); margin-bottom: .6rem; }
+    .feat-desc  { font-size: .88rem; line-height: 1.75; color: var(--muted); }
+
+    /* ─── HOW IT WORKS ─── */
+    .how {
+      background: var(--sidebar);
+      padding: 7rem 7vw;
+      position: relative; overflow: hidden;
+    }
+    .how::before {
+      content: ''; position: absolute;
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(245,184,0,.1) 0%, transparent 70%);
+      bottom: -200px; right: -100px; pointer-events: none;
+    }
+    .how-header { text-align: center; margin-bottom: 4rem; }
+    .how-header .section-title { color: var(--white); }
+    .how-header .section-label { color: var(--gold); }
+    .how-header .section-body  { color: rgba(255,255,255,.55); }
+
+    .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; position: relative; }
+    .steps-grid::before {
+      content: ''; position: absolute;
+      top: 28px; left: calc(16.66% + 20px); right: calc(16.66% + 20px); height: 1px;
+      background: linear-gradient(to right, var(--gold), rgba(245,184,0,.2), var(--gold));
+    }
+
+    .step-card { text-align: center; padding: 2rem 1.5rem; }
+    .step-num {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--gold); color: var(--dark);
+      font-size: 1.1rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.5rem; position: relative; z-index: 1;
+      box-shadow: 0 0 0 8px rgba(245,184,0,.15);
+    }
+    .step-title { font-size: .95rem; font-weight: 700; color: var(--white); margin-bottom: .6rem; }
+    .step-desc  { font-size: .85rem; line-height: 1.75; color: rgba(255,255,255,.5); }
+
+    /* ─── COMPLIANCE BAND ─── */
+    .compliance {
+      background: linear-gradient(135deg, #0a2a15 0%, #0d3319 50%, #0a2a15 100%);
+      padding: 5rem 7vw;
+      display: flex; align-items: center; justify-content: space-between; gap: 3rem;
+      flex-wrap: wrap;
+    }
+    .compliance-left { max-width: 560px; }
+    .compliance-left .section-label { color: #6fcf97; }
+    .compliance-left .section-title { color: var(--white); font-size: 2rem; }
+    .compliance-left .section-body  { color: rgba(255,255,255,.55); }
+    .compliance-badges { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; }
+    .comp-badge {
+      border: 1px solid rgba(111,207,151,.3); color: #6fcf97;
+      padding: .5rem 1.2rem; border-radius: 100px;
+      font-size: .75rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+    }
+    .compliance-right {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; min-width: 280px;
+    }
+    .cr-stat {
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px; padding: 1.2rem;
+    }
+    .cr-val { font-family: 'Lora', serif; font-size: 1.8rem; font-weight: 600; color: #6fcf97; }
+    .cr-lbl { font-size: .7rem; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: .1em; margin-top: .2rem; }
+
+    /* ─── PORTALS ─── */
+    .portals { padding: 7rem 7vw; background: var(--white); }
+    .portals-header { text-align: center; margin-bottom: 4rem; }
+    .portals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+
+    .portal-card {
+      border-radius: 16px; padding: 2.5rem; position: relative; overflow: hidden;
+    }
+    .portal-card.dark {
+      background: var(--sidebar);
+      color: var(--white);
+    }
+    .portal-card.light {
+      background: var(--light);
+      border: 1px solid rgba(0,0,0,.07);
+    }
+    .portal-tag {
+      display: inline-block; padding: .3rem .9rem; border-radius: 100px;
+      font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+    .portal-card.dark .portal-tag  { background: rgba(245,184,0,.15); color: var(--gold); }
+    .portal-card.light .portal-tag { background: var(--green-lt); color: var(--green); }
+    .portal-title { font-size: 1.3rem; font-weight: 700; margin-bottom: .8rem; }
+    .portal-card.dark  .portal-title { color: var(--white); }
+    .portal-card.light .portal-title { color: var(--dark); }
+    .portal-desc { font-size: .9rem; line-height: 1.8; margin-bottom: 1.5rem; }
+    .portal-card.dark  .portal-desc { color: rgba(255,255,255,.55); }
+    .portal-card.light .portal-desc { color: var(--muted); }
+    .portal-list { list-style: none; display: flex; flex-direction: column; gap: .6rem; }
+    .portal-list li { font-size: .85rem; display: flex; align-items: center; gap: .6rem; }
+    .portal-card.dark  .portal-list li { color: rgba(255,255,255,.7); }
+    .portal-card.light .portal-list li { color: #4a3e2e; }
+    .portal-list li::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      flex-shrink: 0; background: var(--gold);
+    }
+    .portal-card.light .portal-list li::before { background: var(--green); }
+
+    /* decorative circle */
+    .portal-deco {
+      position: absolute; bottom: -40px; right: -40px;
+      width: 160px; height: 160px; border-radius: 50%;
+      background: rgba(245,184,0,.07);
+    }
+
+    /* ─── CTA ─── */
+    .cta {
+      padding: 8rem 7vw;
+      background: var(--dark);
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, rgba(245,184,0,.12) 0%, transparent 65%);
+    }
+    .cta-title {
+      font-family: 'Lora', serif;
+      font-size: clamp(2.2rem, 4vw, 4rem);
+      font-weight: 600; color: var(--white); line-height: 1.15;
+      margin-bottom: 1.2rem; position: relative;
+    }
+    .cta-title .accent { color: var(--gold); font-style: italic; }
+    .cta-desc { font-size: 1.05rem; color: rgba(255,255,255,.5); max-width: 500px; margin: 0 auto 2.5rem; line-height: 1.8; position: relative; }
+    .cta-btns { display: flex; gap: 1rem; justify-content: center; position: relative; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--dark);
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding: 3rem 7vw;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-logo { font-size: .9rem; color: rgba(255,255,255,.4); }
+    .footer-logo strong { color: var(--gold); font-size: 1rem; }
+    .footer-links { display: flex; gap: 2rem; list-style: none; }
+    .footer-links a { font-size: .78rem; color: rgba(255,255,255,.35); text-decoration: none; letter-spacing: .06em; text-transform: uppercase; transition: color .2s; }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-copy { font-size: .75rem; color: rgba(255,255,255,.2); }
+
+    /* ─── KEYFRAMES ─── */
+    @keyframes slideDown { from { opacity:0; transform: translateY(-20px); } to { opacity:1; transform: translateY(0); } }
+    @keyframes fadeUp    { from { opacity:0; transform: translateY(28px);  } to { opacity:1; transform: translateY(0); } }
+    @keyframes fadeIn    { from { opacity:0; } to { opacity:1; } }
+    @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(245,184,0,.5); } 50% { box-shadow: 0 0 0 5px rgba(245,184,0,0); } }
+    @keyframes marquee { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+
+    /* ─── RESPONSIVE ─── */
+    @media(max-width:900px){
+      .hero { grid-template-columns: 1fr; }
+      .hero-right { padding: 3rem 5vw; }
+      .about { grid-template-columns: 1fr; }
+      .about-img { min-height: 260px; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .steps-grid { grid-template-columns: 1fr; }
+      .steps-grid::before { display: none; }
+      .portals-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .compliance { flex-direction: column; }
+    }
+    @media(max-width:600px){
+      .features-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-icon">S</div>
+    <div class="logo-text">SOPA <span>Soybean Processors Association</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#portals">Portals</a></li>
+    <li><a href="#compliance">Compliance</a></li>
+  </ul>
+  <a href="#cta" class="nav-btn">Request Access</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="badge"><span class="badge-dot"></span> EUDR-Ready Platform · Now Live</div>
+    <h1 class="hero-title">
+      Transparent Soybean<br>Sourcing, <span class="accent">Reimagined.</span>
+    </h1>
+    <p class="hero-desc">
+      SOPA connects processors with verified farmer land parcel data via Aadhaar & Agristack IDs — enabling full traceability, compliance, and trust across the soybean supply chain.
+    </p>
+    <div class="hero-btns">
+      <a href="#cta" class="btn-gold">Get Started</a>
+      <a href="#how" class="btn-outline">See How It Works</a>
+    </div>
+    <div class="hero-stats">
+      <div><span class="stat-val">18K+</span><span class="stat-lbl">MT Tracked</span></div>
+      <div><span class="stat-val">95%</span><span class="stat-lbl">Approval Rate</span></div>
+      <div><span class="stat-val">99.5%</span><span class="stat-lbl">Platform Uptime</span></div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="mockup-wrap">
+      <div class="mockup-bar">
+        <div class="mockup-dot r"></div>
+        <div class="mockup-dot y"></div>
+        <div class="mockup-dot g"></div>
+        <div class="mockup-url">sopa.org.in/dashboard</div>
+      </div>
+      <div class="mockup-body">
+        <div class="mockup-sidebar">
+          <div class="sb-icon active">⊞</div>
+          <div class="sb-icon">☰</div>
+          <div class="sb-icon">📄</div>
+          <div class="sb-icon">💳</div>
+        </div>
+        <div class="mockup-content">
+          <div class="mc-title">Hello Kumar, Welcome!</div>
+          <div class="mc-cards">
+            <div class="mc-card"><div class="mc-card-label">Requests Submitted</div><div class="mc-card-val">128</div></div>
+            <div class="mc-card"><div class="mc-card-label">Approved</div><div class="mc-card-val">95</div></div>
+            <div class="mc-card"><div class="mc-card-label">Under Review</div><div class="mc-card-val">23</div></div>
+            <div class="mc-card"><div class="mc-card-label">Farmers Submitted</div><div class="mc-card-val">18,750</div></div>
+          </div>
+          <div class="mc-row">
+            <div class="mc-chart-box">
+              <div class="mc-chart-label">Monthly Requests Trend</div>
+              <div class="chart-bars">
+                <div class="bar" style="height:40%"></div>
+                <div class="bar" style="height:55%"></div>
+                <div class="bar" style="height:45%"></div>
+                <div class="bar" style="height:70%"></div>
+                <div class="bar hi" style="height:90%"></div>
+                <div class="bar" style="height:65%"></div>
+                <div class="bar" style="height:80%"></div>
+                <div class="bar hi" style="height:100%"></div>
+                <div class="bar" style="height:75%"></div>
+                <div class="bar" style="height:85%"></div>
+              </div>
+            </div>
+            <div class="mc-donut-box">
+              <div class="mc-donut-label">Procurement</div>
+              <svg class="donut-svg" viewBox="0 0 52 52">
+                <circle cx="26" cy="26" r="20" fill="none" stroke="#e0e0e0" stroke-width="6"/>
+                <circle cx="26" cy="26" r="20" fill="none" stroke="#F5B800" stroke-width="6"
+                  stroke-dasharray="52 74.8" stroke-dashoffset="0" stroke-linecap="round"/>
+                <circle cx="26" cy="26" r="20" fill="none" stroke="#2E7D52" stroke-width="6"
+                  stroke-dasharray="28 98.8" stroke-dashoffset="-52" stroke-linecap="round"/>
+                <circle cx="26" cy="26" r="20" fill="none" stroke="#1a5c32" stroke-width="6"
+                  stroke-dasharray="20 106.8" stroke-dashoffset="-80" stroke-linecap="round"/>
+                <text x="26" y="30" text-anchor="middle" font-size="6" font-weight="700" fill="#333">18K MT</text>
+              </svg>
+            </div>
+          </div>
+          <div class="mc-table">
+            <div class="mc-table-hdr"><span>Request ID</span><span>Source</span><span>Qty (MT)</span><span>Status</span></div>
+            <div class="mc-table-row"><span>LPR-1001</span><span>Farmer</span><span>120</span><span><span class="tag-approved">Approved</span></span></div>
+            <div class="mc-table-row"><span>LPR-1002</span><span>FPO</span><span>340</span><span><span class="tag-approved">Approved</span></span></div>
+            <div class="mc-table-row"><span>LPR-1003</span><span>Mandi</span><span>88</span><span><span class="tag-pending">Pending</span></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee">
+  <div class="marquee-track">
+    <span class="mq-item">Aadhaar-Verified Data <span class="mq-sep">✦</span></span>
+    <span class="mq-item">Agristack Integration <span class="mq-sep">✦</span></span>
+    <span class="mq-item">EUDR Compliance <span class="mq-sep">✦</span></span>
+    <span class="mq-item">Prepaid Payment Model <span class="mq-sep">✦</span></span>
+    <span class="mq-item">Land Parcel Traceability <span class="mq-sep">✦</span></span>
+    <span class="mq-item">Audit-Ready Logs <span class="mq-sep">✦</span></span>
+    <span class="mq-item">Role-Based Access <span class="mq-sep">✦</span></span>
+    <span class="mq-item">Aadhaar-Verified Data <span class="mq-sep">✦</span></span>
+    <span class="mq-item">Agristack Integration <span class="mq-sep">✦</span></span>
+    <span class="mq-item">EUDR Compliance <span class="mq-sep">✦</span></span>
+    <span class="mq-item">Prepaid Payment Model <span class="mq-sep">✦</span></span>
+    <span class="mq-item">Land Parcel Traceability <span class="mq-sep">✦</span></span>
+    <span class="mq-item">Audit-Ready Logs <span class="mq-sep">✦</span></span>
+    <span class="mq-item">Role-Based Access <span class="mq-sep">✦</span></span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about">
+  <div class="about-img">
+    <div class="about-img-inner"></div>
+    <div class="about-img-overlay"></div>
+    <div class="about-img-badge">
+      18,750+<br><small>Farmers Onboarded</small>
+    </div>
+  </div>
+  <div class="about-text">
+    <div class="section-label">About SOPA</div>
+    <h2 class="section-title">India's Soybean Supply Chain — Made Transparent</h2>
+    <p class="section-body">
+      The Soybean Processors Association platform enables processors to securely access verified farmer land parcel data, ensuring every soybean consignment is traceable from farm to factory — in full compliance with EUDR and domestic regulations.
+    </p>
+    <ul class="check-list">
+      <li>Secure access to farmer data via Aadhaar & Agristack IDs</li>
+      <li>End-to-end traceability of soybean sourcing</li>
+      <li>EUDR-compliant audit logs stored immutably</li>
+      <li>Prepaid, payment-gated request submissions</li>
+      <li>Automated approval & refund workflows</li>
+    </ul>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="features-header">
+    <div class="section-label">Platform Capabilities</div>
+    <h2 class="section-title">Everything You Need for Compliant Procurement</h2>
+  </div>
+  <div class="features-grid">
+    <div class="feat-card">
+      <div class="feat-icon">🛡️</div>
+      <div class="feat-title">Aadhaar-Backed Verification</div>
+      <div class="feat-desc">Every farmer data request is validated against Aadhaar numbers and Agristack IDs, ensuring data integrity and preventing fraud.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🌍</div>
+      <div class="feat-title">EUDR-Ready Traceability</div>
+      <div class="feat-desc">Full land parcel traceability meets EU Deforestation Regulation requirements — maintain complete audit trails with immutable timestamped logs.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">💳</div>
+      <div class="feat-title">Prepaid Payment Model</div>
+      <div class="feat-desc">Integrated UPI, Net Banking & Wallet support. Payments are required before data requests proceed, with automatic refunds on data unavailability.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">⚡</div>
+      <div class="feat-title">Real-Time Request Tracking</div>
+      <div class="feat-desc">Track the status of every land parcel request — Pending, Under Review, Approved, Rejected, Data Shared, or Refunded — in real time.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🔒</div>
+      <div class="feat-title">Role-Based Access Control</div>
+      <div class="feat-desc">Strict separation between Processor and SOPA Admin roles, with secure OTP-based authentication and encrypted Aadhaar data storage.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">📊</div>
+      <div class="feat-title">Compliance Dashboard</div>
+      <div class="feat-desc">Centralized view of all requests, approvals, procurement volumes, and audit-ready invoice exports for regulators and internal teams.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="how-header">
+    <div class="section-label">Process Flow</div>
+    <h2 class="section-title" style="color:white;">How It Works</h2>
+    <p class="section-body" style="color:rgba(255,255,255,.5);max-width:500px;margin:0 auto;">
+      A simple, secure, six-step workflow from processor registration to verified data delivery.
+    </p>
+  </div>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <div class="step-title">Register & KYC</div>
+      <div class="step-desc">Processors register with company details, contact info, and KYC documents. Account is created upon successful verification.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <div class="step-title">Submit Data Request</div>
+      <div class="step-desc">Provide consignment details, farmer names, Aadhaar numbers, and Agristack IDs. The system validates all inputs.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <div class="step-title">Complete Payment</div>
+      <div class="step-desc">Pay via UPI, Net Banking, or Wallet. Payment is mandatory before request submission. A unique Request ID is generated.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">4</div>
+      <div class="step-title">SOPA Admin Review</div>
+      <div class="step-desc">SOPA Admin validates farmer details and payment status, then approves or rejects the request with full decision logs.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">5</div>
+      <div class="step-title">Agristack Data Fetch</div>
+      <div class="step-desc">Upon approval, the system fetches verified land parcel data from Agristack and securely delivers it to the processor.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">6</div>
+      <div class="step-title">Audit & Compliance</div>
+      <div class="step-desc">All request details, responses, and timestamps are stored immutably for EUDR traceability and regulatory audits.</div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPLIANCE BAND -->
+<section class="compliance" id="compliance">
+  <div class="compliance-left">
+    <div class="section-label">Regulatory Compliance</div>
+    <h2 class="section-title">Built for EUDR & Indian Regulatory Standards</h2>
+    <p class="section-body">SOPA maintains complete audit-ready records including Request IDs, processor details, timestamps, land parcel data, and invoice details — ensuring full compliance with the EU Deforestation Regulation and domestic data governance norms.</p>
+    <div class="compliance-badges">
+      <span class="comp-badge">EUDR Ready</span>
+      <span class="comp-badge">Data Immutability</span>
+      <span class="comp-badge">Aadhaar Encrypted</span>
+      <span class="comp-badge">Agristack Integrated</span>
+    </div>
+  </div>
+  <div class="compliance-right">
+    <div class="cr-stat"><div class="cr-val">99.5%</div><div class="cr-lbl">Uptime SLA</div></div>
+    <div class="cr-stat"><div class="cr-val">&lt;3s</div><div class="cr-lbl">Response Time</div></div>
+    <div class="cr-stat"><div class="cr-val">100%</div><div class="cr-lbl">Audit Logged</div></div>
+    <div class="cr-stat"><div class="cr-val">AES-256</div><div class="cr-lbl">Data Encryption</div></div>
+  </div>
+</section>
+
+<!-- PORTALS -->
+<section class="portals" id="portals">
+  <div class="portals-header">
+    <div class="section-label">Two Powerful Portals</div>
+    <h2 class="section-title">Designed for Every Stakeholder</h2>
+  </div>
+  <div class="portals-grid">
+    <div class="portal-card dark">
+      <div class="portal-tag">Processor Portal</div>
+      <div class="portal-title">For Soybean Processors</div>
+      <p class="portal-desc">A dedicated portal for processors to register, submit farmer data requests, manage payments, and track approvals — all in one secure interface.</p>
+      <ul class="portal-list">
+        <li>Company registration & OTP-based login</li>
+        <li>Submit & track land parcel requests</li>
+        <li>Integrated UPI / Net Banking payments</li>
+        <li>View approved data & download documents</li>
+        <li>Real-time status notifications (Email/SMS)</li>
+      </ul>
+      <div class="portal-deco"></div>
+    </div>
+    <div class="portal-card light">
+      <div class="portal-tag">Admin Portal</div>
+      <div class="portal-title">For SOPA Administrators</div>
+      <p class="portal-desc">Full control for SOPA admins to review incoming requests, validate farmer data, manage approvals, trigger Agristack fetches, and handle refunds.</p>
+      <ul class="portal-list">
+        <li>Dashboard with all processor requests</li>
+        <li>Validate Aadhaar & payment details</li>
+        <li>Approve or reject with decision logs</li>
+        <li>Trigger Agristack land parcel fetch</li>
+        <li>Manage refunds & audit exports</li>
+      </ul>
+      <div class="portal-deco"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="cta">
+  <h2 class="cta-title">Start Sourcing with <span class="accent">Full Traceability</span></h2>
+  <p class="cta-desc">Join SOPA's platform and bring transparency, compliance, and efficiency to your soybean procurement operations.</p>
+  <div class="cta-btns">
+    <a href="#" class="btn-gold">Request Processor Access</a>
+    <a href="#" class="btn-outline">Contact SOPA Team</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><strong>SOPA</strong> · Soybean Processors Association of India</div>
+  <ul class="footer-links">
+    <li><a href="#">Privacy</a></li>
+    <li><a href="#">Compliance</a></li>
+    <li><a href="#">Support</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 SOPA. All rights reserved.</div>
+</footer>
+
+</body>
+</html>
