@@ -13,7 +13,6 @@
       "dest": "/sopa-landing.html"
     }
   ],
-  "functions": {},
   "rewrites": [
     {
       "source": "/(.*)",
