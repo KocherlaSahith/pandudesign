@@ -1,22 +1,22 @@
 {
   "version": 2,
-  "name": "sopa-landing",
+  "name": "awd-landing",
   "builds": [
     {
-      "src": "sopa-landing.html",
+      "src": "awd_landing_page.html",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/sopa-landing.html"
+      "dest": "/awd_landing_page.html"
     }
   ],
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/sopa-landing.html"
+      "destination": "/awd_landing_page.html"
     }
   ],
   "headers": [

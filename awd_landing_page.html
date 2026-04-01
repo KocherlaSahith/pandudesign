@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Open dMRV Platform — AWD</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark:   #1a3a1f;
+      --green-core:   #2d6a35;
+      --green-mid:    #4a9456;
+      --green-vivid:  #6bbf72;
+      --green-lime:   #a8e063;
+      --amber:        #f0b429;
+      --soil:         #8b5e3c;
+      --cream:        #f5f0e8;
+      --white:        #ffffff;
+      --text-dark:    #111b13;
+      --text-muted:   #4a5e4d;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ─────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 6vw;
+      background: rgba(26,58,31,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(168,224,99,0.15);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem; font-weight: 800;
+      color: var(--green-lime);
+      letter-spacing: 0.04em;
+    }
+    .nav-logo span { color: var(--amber); }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      color: rgba(255,255,255,0.75);
+      text-decoration: none; font-size: 0.9rem; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--green-lime); }
+    .nav-cta {
+      background: var(--green-lime);
+      color: var(--green-dark);
+      padding: 10px 22px; border-radius: 6px;
+      font-weight: 700; font-size: 0.85rem;
+      text-decoration: none; letter-spacing: 0.03em;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .nav-cta:hover { background: var(--amber); transform: translateY(-1px); }
+
+    /* ── HERO ────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      background: var(--green-dark);
+      position: relative;
+      display: flex; align-items: center;
+      overflow: hidden;
+      padding: 120px 6vw 80px;
+    }
+
+    /* grid texture overlay */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(168,224,99,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(168,224,99,0.05) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    /* large circle blob */
+    .hero-blob {
+      position: absolute;
+      width: 640px; height: 640px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(107,191,114,0.22) 0%, transparent 70%);
+      right: -100px; top: 50%; transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative; z-index: 2;
+      max-width: 780px;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(168,224,99,0.12);
+      border: 1px solid rgba(168,224,99,0.35);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 0.78rem; font-weight: 600;
+      color: var(--green-lime);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 28px;
+      animation: fadeUp 0.6s ease both;
+    }
+    .hero-badge .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green-lime);
+      animation: pulse 1.8s ease infinite;
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      color: var(--white);
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    .hero h1 .accent { color: var(--green-lime); }
+    .hero h1 .accent2 { color: var(--amber); }
+
+    .hero-sub {
+      margin-top: 22px;
+      font-size: 1.1rem; line-height: 1.7;
+      color: rgba(255,255,255,0.65);
+      max-width: 580px;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    .hero-actions {
+      margin-top: 42px;
+      display: flex; flex-wrap: wrap; gap: 16px;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--green-lime);
+      color: var(--green-dark);
+      padding: 15px 32px; border-radius: 8px;
+      font-weight: 700; font-size: 1rem;
+      text-decoration: none; letter-spacing: 0.02em;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 24px rgba(168,224,99,0.35);
+    }
+    .btn-primary:hover { background: var(--amber); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(240,180,41,0.35); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent;
+      color: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 15px 32px; border-radius: 8px;
+      font-weight: 600; font-size: 1rem;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--green-lime); color: var(--green-lime); }
+
+    .hero-stats {
+      margin-top: 64px;
+      display: flex; flex-wrap: wrap; gap: 40px;
+      animation: fadeUp 0.6s 0.4s ease both;
+    }
+    .stat { }
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.2rem; font-weight: 800;
+      color: var(--green-lime);
+      line-height: 1;
+    }
+    .stat-label {
+      margin-top: 4px;
+      font-size: 0.82rem; font-weight: 500;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+
+    /* decorative diagonal strip */
+    .hero-strip {
+      position: absolute; bottom: -2px; left: 0; right: 0;
+      height: 80px; background: var(--cream);
+      clip-path: polygon(0 100%, 100% 0, 100% 100%);
+    }
+
+    /* ── SECTION SHARED ──────────────────────────── */
+    section { padding: 96px 6vw; }
+    .section-label {
+      font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--green-core);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--text-dark);
+    }
+    .section-title .hl { color: var(--green-core); }
+
+    /* ── PROBLEM BANNER ──────────────────────────── */
+    .problem-section {
+      background: var(--green-dark);
+      position: relative; overflow: hidden;
+      padding: 80px 6vw;
+    }
+    .problem-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        -45deg,
+        rgba(168,224,99,0.03) 0px,
+        rgba(168,224,99,0.03) 1px,
+        transparent 1px,
+        transparent 24px
+      );
+    }
+    .problem-inner { position: relative; z-index: 1; }
+    .problem-label { color: var(--amber); }
+    .problem-title { color: var(--white); }
+    .problem-cards {
+      margin-top: 48px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .problem-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(168,224,99,0.12);
+      border-radius: 12px;
+      padding: 28px 24px;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    }
+    .problem-card:hover {
+      background: rgba(168,224,99,0.08);
+      border-color: rgba(168,224,99,0.3);
+      transform: translateY(-4px);
+    }
+    .problem-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: rgba(168,224,99,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 16px;
+    }
+    .problem-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem; font-weight: 700;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+    .problem-card p {
+      font-size: 0.87rem; line-height: 1.6;
+      color: rgba(255,255,255,0.55);
+    }
+
+    /* ── FEATURES ────────────────────────────────── */
+    .features-section { background: var(--cream); }
+    .features-grid {
+      margin-top: 56px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 28px;
+    }
+    .feature-card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 36px 30px;
+      border: 1.5px solid transparent;
+      transition: border-color 0.25s, transform 0.2s, box-shadow 0.25s;
+      position: relative; overflow: hidden;
+    }
+    .feature-card::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--green-core), var(--green-lime));
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .feature-card:hover {
+      border-color: rgba(74,148,86,0.25);
+      transform: translateY(-5px);
+      box-shadow: 0 16px 48px rgba(45,106,53,0.12);
+    }
+    .feature-card:hover::after { transform: scaleX(1); }
+    .feature-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 3.5rem; font-weight: 800;
+      color: rgba(74,148,86,0.08);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .feature-icon-wrap {
+      width: 52px; height: 52px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--green-core), var(--green-mid));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 16px rgba(45,106,53,0.3);
+    }
+    .feature-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem; font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+    .feature-card p {
+      font-size: 0.9rem; line-height: 1.65;
+      color: var(--text-muted);
+    }
+    .feature-tag {
+      margin-top: 20px;
+      display: inline-block;
+      background: rgba(74,148,86,0.08);
+      color: var(--green-core);
+      font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 100px;
+    }
+
+    /* ── HOW IT WORKS ────────────────────────────── */
+    .how-section {
+      background: linear-gradient(160deg, #1e4024 0%, #0f2212 100%);
+      position: relative; overflow: hidden;
+    }
+    .how-section .section-label { color: var(--green-lime); }
+    .how-section .section-title { color: var(--white); }
+    .how-section .section-title .hl { color: var(--green-lime); }
+    .how-sub { margin-top: 12px; font-size: 1rem; color: rgba(255,255,255,0.55); max-width: 520px; }
+
+    .layers {
+      margin-top: 56px;
+      display: flex; flex-direction: column; gap: 0;
+    }
+    .layer-item {
+      display: flex; gap: 32px; align-items: flex-start;
+      padding: 32px 0;
+      border-bottom: 1px solid rgba(168,224,99,0.1);
+      position: relative;
+    }
+    .layer-item:last-child { border-bottom: none; }
+    .layer-badge {
+      flex-shrink: 0;
+      width: 64px; height: 64px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.72rem; font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .layer-badge.l1 { background: rgba(107,191,114,0.15); color: var(--green-vivid); border: 1px solid rgba(107,191,114,0.3); }
+    .layer-badge.l2 { background: rgba(168,224,99,0.15); color: var(--green-lime); border: 1px solid rgba(168,224,99,0.3); }
+    .layer-badge.l3 { background: rgba(240,180,41,0.15); color: var(--amber); border: 1px solid rgba(240,180,41,0.3); }
+    .layer-content h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem; font-weight: 700;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+    .layer-content p {
+      font-size: 0.9rem; line-height: 1.65;
+      color: rgba(255,255,255,0.5);
+      max-width: 600px;
+    }
+    .layer-pills {
+      margin-top: 14px;
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .pill {
+      font-size: 0.75rem; font-weight: 600;
+      padding: 4px 12px; border-radius: 100px;
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.6);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* ── IMPACT / CTA ────────────────────────────── */
+    .cta-section {
+      background: var(--cream);
+      text-align: center;
+      padding: 100px 6vw;
+    }
+    .cta-box {
+      background: linear-gradient(135deg, var(--green-dark) 0%, #1e4a24 100%);
+      border-radius: 24px;
+      padding: 72px 5vw;
+      position: relative; overflow: hidden;
+    }
+    .cta-box::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle at 80% 50%, rgba(168,224,99,0.15), transparent 60%);
+      pointer-events: none;
+    }
+    .cta-box .section-label { color: var(--green-lime); }
+    .cta-box h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 4.5vw, 3.2rem);
+      font-weight: 800;
+      color: var(--white);
+      margin-top: 12px; margin-bottom: 20px;
+    }
+    .cta-box h2 span { color: var(--green-lime); }
+    .cta-box p {
+      font-size: 1rem; color: rgba(255,255,255,0.6);
+      max-width: 520px; margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+    .cta-btns { display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; }
+    .impact-nums {
+      margin-top: 60px;
+      display: flex; justify-content: center; flex-wrap: wrap; gap: 48px;
+    }
+    .impact-item { text-align: center; }
+    .impact-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.8rem; font-weight: 800;
+      color: var(--green-lime);
+    }
+    .impact-label {
+      font-size: 0.8rem; font-weight: 600;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      margin-top: 6px;
+    }
+
+    /* ── FOOTER ──────────────────────────────────── */
+    footer {
+      background: var(--green-dark);
+      padding: 40px 6vw;
+      display: flex; flex-wrap: wrap;
+      justify-content: space-between; align-items: center;
+      gap: 16px;
+      border-top: 1px solid rgba(168,224,99,0.1);
+    }
+    .footer-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem; font-weight: 800;
+      color: var(--green-lime);
+    }
+    .footer-logo span { color: var(--amber); }
+    .footer-meta {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.35);
+    }
+    .footer-partner {
+      font-size: 0.82rem; color: rgba(255,255,255,0.4);
+    }
+    .footer-partner strong { color: rgba(255,255,255,0.65); }
+
+    /* ── ANIMATIONS ──────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0; transform: translateY(32px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ──────────────────────────────── */
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .hero-stats { gap: 24px; }
+      .layer-item { flex-direction: column; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Open<span>dMRV</span></div>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how">Architecture</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Request Access →</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-blob"></div>
+    <div class="hero-inner">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Now Live — Uttar Pradesh, India
+      </div>
+      <h1>
+        Agriculture's<br/>
+        <span class="accent">Carbon Future,</span><br/>
+        <span class="accent2">Verified.</span>
+      </h1>
+      <p class="hero-sub">
+        The Open dMRV Platform is a state-wide digital backbone for monitoring, reporting, and verifying agricultural carbon credits — built for scale, trust, and farmer transparency across Uttar Pradesh.
+      </p>
+      <div class="hero-actions">
+        <a href="#features" class="btn-primary">Explore the Platform →</a>
+        <a href="#how" class="btn-secondary">See How It Works</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-num">50,000+</div>
+          <div class="stat-label">Target Farmers</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">15+</div>
+          <div class="stat-label">Implementing Companies</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">24</div>
+          <div class="stat-label">Months to Full Rollout</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">3-Tier</div>
+          <div class="stat-label">Governance Model</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-strip"></div>
+  </section>
+
+  <!-- PROBLEM SECTION -->
+  <section class="problem-section">
+    <div class="problem-inner">
+      <div class="section-label problem-label reveal">The Challenge</div>
+      <h2 class="section-title problem-title reveal">
+        Agricultural carbon programs<br/>face five systemic barriers
+      </h2>
+      <div class="problem-cards">
+        <div class="problem-card reveal">
+          <div class="problem-icon">🗂️</div>
+          <h3>Data Fragmentation</h3>
+          <p>Each company uses its own tools and MRV formats, making state-level aggregation impossible.</p>
+        </div>
+        <div class="problem-card reveal">
+          <div class="problem-icon">📡</div>
+          <h3>No Real-Time Monitoring</h3>
+          <p>Monthly reports and manual surveys leave underperformance undetected until it's too late.</p>
+        </div>
+        <div class="problem-card reveal">
+          <div class="problem-icon">💰</div>
+          <h3>Financial Opacity</h3>
+          <p>No standardised cost tracking per hectare or tCO₂e makes benchmarking impossible.</p>
+        </div>
+        <div class="problem-card reveal">
+          <div class="problem-icon">⚠️</div>
+          <h3>MRV Integrity Risks</h3>
+          <p>Manual entry and lack of cross-validation risk registry rejection and credit invalidation.</p>
+        </div>
+        <div class="problem-card reveal">
+          <div class="problem-icon">🌾</div>
+          <h3>Farmer Trust Deficit</h3>
+          <p>Farmers can't see their carbon earnings or payment timeline, leading to high drop-off rates.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES SECTION -->
+  <section class="features-section" id="features">
+    <div class="section-label reveal">Platform Capabilities</div>
+    <h2 class="section-title reveal">Built to solve every layer<br/>of the <span class="hl">carbon credit chain</span></h2>
+    <div class="features-grid">
+
+      <div class="feature-card reveal">
+        <div class="feature-num">01</div>
+        <div class="feature-icon-wrap">🛰️</div>
+        <h3>AI-Powered MRV Engine</h3>
+        <p>Automated satellite monitoring with NDVI indices, AI anomaly detection, and confidence scoring per farmer dataset — reducing calculation time from weeks to hours.</p>
+        <span class="feature-tag">Core Engine</span>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-num">02</div>
+        <div class="feature-icon-wrap">🏗️</div>
+        <h3>Multi-Tenant Company Layer</h3>
+        <p>Plug-and-play onboarding for new companies with isolated secure tenants, mandatory schema enforcement, and configurable methodology modules per project.</p>
+        <span class="feature-tag">Scalability</span>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-num">03</div>
+        <div class="feature-icon-wrap">🌍</div>
+        <h3>Farmer & Land Registry</h3>
+        <p>Aadhaar-linked deduplication, GPS geo-fencing of plot boundaries, and Bhulekh land records integration for verified plot ownership.</p>
+        <span class="feature-tag">Trust & Identity</span>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-num">04</div>
+        <div class="feature-icon-wrap">⛓️</div>
+        <h3>Blockchain Audit Trail</h3>
+        <p>Append-only immutable data pipeline anchored on the TRST01 blockchain — every data point is traceable from farm activity to verified credit issuance.</p>
+        <span class="feature-tag">Integrity</span>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-num">05</div>
+        <div class="feature-icon-wrap">📱</div>
+        <h3>Farmer Self-Service App</h3>
+        <p>Android offline-first field app with real-time carbon earnings, payment tracking, and SMS notifications at every milestone — including IVR helpline for non-smartphone users.</p>
+        <span class="feature-tag">Farmer Experience</span>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="feature-num">06</div>
+        <div class="feature-icon-wrap">📊</div>
+        <h3>IITR Control Tower</h3>
+        <p>State-wide governance dashboard with drill-down analytics, 3-tier automated alert escalation, cross-company benchmarking, and real-time financial intelligence.</p>
+        <span class="feature-tag">Governance</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-section" id="how">
+    <div class="section-label reveal">Architecture</div>
+    <h2 class="section-title reveal">Three-Layer <span class="hl">Governance Model</span></h2>
+    <p class="how-sub reveal">Centralised intelligence, decentralised execution — each layer with defined authority, data flows, and accountability.</p>
+
+    <div class="layers">
+      <div class="layer-item reveal">
+        <div class="layer-badge l3">Layer<br/>3</div>
+        <div class="layer-content">
+          <h3>Governance — IIT Roorkee (IITR)</h3>
+          <p>Acts as the central standard setter, MRV validator, data custodian, and benchmarking authority. Reviews and approves carbon calculations, sets methodology versions, and signs off on verified credits.</p>
+          <div class="layer-pills">
+            <span class="pill">MRV Standards</span>
+            <span class="pill">Carbon Sign-off</span>
+            <span class="pill">Compliance Certificates</span>
+            <span class="pill">Audit Authority</span>
+          </div>
+        </div>
+      </div>
+      <div class="layer-item reveal">
+        <div class="layer-badge l2">Layer<br/>2</div>
+        <div class="layer-content">
+          <h3>Intelligence — Open dMRV Platform Engine</h3>
+          <p>The automated core: standardises data formats, runs MRV calculations, triggers satellite monitoring, manages the financial tracking layer, and fires the 3-tier alert escalation engine for anomalies.</p>
+          <div class="layer-pills">
+            <span class="pill">Auto MRV Calculation</span>
+            <span class="pill">Satellite Monitoring</span>
+            <span class="pill">Financial Benchmarking</span>
+            <span class="pill">Data Quality Scoring</span>
+          </div>
+        </div>
+      </div>
+      <div class="layer-item reveal">
+        <div class="layer-badge l1">Layer<br/>1</div>
+        <div class="layer-content">
+          <h3>Execution — Companies, Field Agents & Farmers</h3>
+          <p>Implementing companies handle farmer onboarding, field operations, and activity logging. Field agents capture GPS evidence and consents. Farmers access earnings and payment status in real time.</p>
+          <div class="layer-pills">
+            <span class="pill">Farmer Onboarding</span>
+            <span class="pill">Digital Consent</span>
+            <span class="pill">Activity Logging</span>
+            <span class="pill">Expense Reporting</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section" id="contact">
+    <div class="cta-box reveal">
+      <div class="section-label" style="color:var(--green-lime)">Ready to Scale?</div>
+      <h2>From farm activity to<br/><span>verified carbon credit.</span></h2>
+      <p>Join the Open dMRV Platform and bring transparent, trustworthy carbon accounting to every farmer in Uttar Pradesh.</p>
+      <div class="cta-btns">
+        <a href="#" class="btn-primary">Request Platform Access →</a>
+        <a href="#" class="btn-secondary" style="color:rgba(255,255,255,0.7); border-color:rgba(255,255,255,0.2);">Download the Brief</a>
+      </div>
+      <div class="impact-nums">
+        <div class="impact-item">
+          <div class="impact-num">50K+</div>
+          <div class="impact-label">Farmers by Month 24</div>
+        </div>
+        <div class="impact-item">
+          <div class="impact-num">21-Day</div>
+          <div class="impact-label">Farmer Payment SLA</div>
+        </div>
+        <div class="impact-item">
+          <div class="impact-num">14-Day</div>
+          <div class="impact-label">Grievance Resolution</div>
+        </div>
+        <div class="impact-item">
+          <div class="impact-num">24 KPIs</div>
+          <div class="impact-label">Real-Time Tracked</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Open<span>dMRV</span></div>
+    <div class="footer-meta">Uttar Pradesh Agricultural Carbon Credit Governance · v3.0 · March 2026</div>
+    <div class="footer-partner">Governed by <strong>IIT Roorkee</strong> · Technology by <strong>TRST01</strong></div>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

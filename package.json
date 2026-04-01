@@ -1,22 +1,19 @@
 {
-  "name": "sopa-landing",
+  "name": "awd-landing",
   "version": "1.0.0",
-  "description": "SOPA - Soybean Processors Association Platform Landing Page",
-  "main": "sopa-landing.html",
+  "description": "AWD Landing Page",
+  "main": "awd_landing_page.html",
   "scripts": {
     "dev": "vercel dev",
     "build": "vercel build",
     "deploy": "vercel --prod"
   },
   "keywords": [
-    "sopa",
-    "soybean",
-    "processors",
-    "association",
+    "awd",
     "landing",
     "vercel"
   ],
-  "author": "SOPA Team",
+  "author": "AWD Team",
   "license": "MIT",
   "devDependencies": {
     "vercel": "^latest"
