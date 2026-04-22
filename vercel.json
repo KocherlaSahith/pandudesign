@@ -3,20 +3,20 @@
   "name": "awd-landing",
   "builds": [
     {
-      "src": "seed-information.html",
+      "src": "add-seed-variety.html",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/seed-information.html"
+      "dest": "/add-seed-variety.html"
     }
   ],
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/seed-information.html"
+      "destination": "/add-seed-variety.html"
     }
   ],
   "headers": [

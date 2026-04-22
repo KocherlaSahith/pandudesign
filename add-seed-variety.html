@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=1280"/>
+<title>Mahatrace – Add Seed Variety</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --navy:    #0d2030;
+  --navy2:   #0a1a27;
+  --green:   #6aab4c;
+  --green2:  #4e8e34;
+  --green-bg:#edf5e9;
+  --amber:   #c79548;
+  --amber-bg:#fdf3e3;
+  --bg:      #e7ebe1;
+  --card:    #ffffff;
+  --muted:   #888998;
+  --text:    #10181f;
+  --light:   #f4f6f0;
+  --border:  #d6dbd0;
+  --warn:    #e07b3c;
+  --warn-bg: #fef0e7;
+  --red:     #d64040;
+  --red-bg:  #fdeaea;
+  --blue:    #4a8fcc;
+  --blue-bg: #e8f2fa;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ── NAV ── */
+nav{background:var(--navy);height:64px;display:flex;align-items:center;padding:0 40px;gap:36px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.28);}
+.nav-logo{background:var(--green);color:white;font-family:'DM Serif Display',serif;font-size:17px;padding:6px 14px;border-radius:4px;margin-right:10px;letter-spacing:.4px;white-space:nowrap;}
+nav a{color:#ede7dc;text-decoration:none;font-size:13.5px;font-weight:500;opacity:.75;}
+nav a.active{opacity:1;color:#fff;border-bottom:2px solid var(--green);padding-bottom:2px;}
+.nav-spacer{flex:1;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-avatar{width:32px;height:32px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:12px;}
+.nav-uinfo{display:flex;flex-direction:column;}
+.nav-uinfo span:first-child{font-size:13px;font-weight:600;color:#fff;}
+.nav-uinfo span:last-child{font-size:10.5px;color:var(--muted);}
+
+/* ── LAYOUT ── */
+.page{display:grid;grid-template-columns:224px 1fr;min-height:calc(100vh - 64px);}
+
+/* ── SIDEBAR ── */
+aside{background:var(--navy2);padding:24px 0;display:flex;flex-direction:column;gap:2px;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;}
+.sb-sec{font-size:9.5px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:rgba(255,255,255,.28);padding:14px 24px 5px;}
+.sb-item{display:flex;align-items:center;gap:11px;padding:9px 24px;color:rgba(255,255,255,.58);font-size:13px;font-weight:500;cursor:pointer;border-left:3px solid transparent;text-decoration:none;}
+.sb-item:hover{background:rgba(255,255,255,.05);color:#fff;}
+.sb-item.active{background:rgba(106,171,76,.13);color:var(--green);border-left-color:var(--green);font-weight:600;}
+.sb-badge{margin-left:auto;background:var(--warn);color:white;font-size:9.5px;font-weight:700;padding:2px 6px;border-radius:10px;}
+
+/* ── MAIN WRAPPER ── */
+main{padding:30px 36px 40px;display:flex;gap:26px;align-items:flex-start;}
+
+/* ── STEPPER ── */
+.stepper{width:214px;flex-shrink:0;position:sticky;top:90px;}
+.step-group-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:16px;}
+.step-item{display:flex;align-items:flex-start;gap:12px;margin-bottom:2px;position:relative;}
+.step-item:not(:last-child)::after{content:'';position:absolute;left:13px;top:30px;width:2px;height:28px;background:var(--border);}
+.step-item.done::after{background:var(--green);}
+.step-circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;z-index:1;}
+.step-circle.done{background:var(--green);color:white;}
+.step-circle.active{background:var(--navy);color:white;box-shadow:0 0 0 3px rgba(13,32,48,.15);}
+.step-circle.pending{background:white;color:var(--muted);border:2px solid var(--border);}
+.step-body{padding:4px 0 24px;}
+.step-label{font-size:13px;font-weight:600;}
+.step-label.done{color:var(--green2);}
+.step-label.active{color:var(--navy);}
+.step-label.pending{color:var(--muted);}
+.step-desc{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4;}
+
+/* context box */
+.ctx-box{background:white;border:1px solid var(--border);border-radius:10px;padding:16px;margin-top:24px;}
+.ctx-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;}
+.ctx-row{margin-bottom:10px;}
+.ctx-row:last-child{margin-bottom:0;}
+.ctx-lbl{font-size:10px;color:var(--muted);}
+.ctx-val{font-size:12.5px;font-weight:600;color:var(--navy);margin-top:2px;}
+
+/* ── FORM AREA ── */
+.form-area{flex:1;min-width:0;display:flex;flex-direction:column;}
+
+/* breadcrumb */
+.bc{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-bottom:14px;}
+.bc a{color:var(--green);text-decoration:none;font-weight:500;}
+
+/* page heading */
+.pg-hdr{margin-bottom:22px;}
+.pg-hdr h1{font-family:'DM Serif Display',serif;font-size:24px;font-weight:400;color:var(--navy);}
+.pg-hdr p{font-size:12px;color:var(--muted);margin-top:4px;}
+
+/* ── SECTION CARD ── */
+.sec{background:var(--card);border-radius:10px;border:1px solid var(--border);margin-bottom:18px;overflow:hidden;}
+.sec.active-sec{border-color:var(--navy);border-width:2px;}
+.sec.dimmed{opacity:.5;pointer-events:none;}
+
+.sec-hdr{padding:15px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+.sec-hdr.active-bg{background:var(--light);}
+.sec-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.sn-done{background:var(--green);color:white;}
+.sn-active{background:var(--navy);color:white;}
+.sn-pending{background:white;color:var(--muted);border:2px solid var(--border);}
+.sec-title{font-size:14px;font-weight:600;color:var(--navy);}
+.sec-meta{margin-left:auto;}
+
+.sec-body{padding:22px;}
+
+.ribbon{display:flex;align-items:center;gap:8px;padding:9px 22px;background:var(--green-bg);border-top:1px solid #c8e6b8;font-size:12px;color:var(--green2);font-weight:600;}
+
+/* ── FORM PRIMITIVES ── */
+.fg{display:flex;flex-direction:column;gap:5px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;}
+.g3-1{display:grid;grid-template-columns:2fr 1fr;gap:16px;}
+.mt16{margin-top:16px;}
+.mt20{margin-top:20px;}
+.mb16{margin-bottom:16px;}
+
+label{font-size:11.5px;font-weight:600;color:var(--text);}
+.req{color:var(--red);}
+.opt{font-size:10.5px;color:var(--muted);font-weight:400;margin-left:3px;}
+
+.fi,.fs,.ft{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);background:white;outline:none;transition:border-color .15s,box-shadow .15s;}
+.fi:focus,.fs:focus,.ft:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(106,171,76,.12);}
+.fi.v{background:var(--light);}
+.fs{appearance:none;background:white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") no-repeat right 12px center;}
+.fs.v{background-color:var(--light);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+.ft{resize:vertical;min-height:80px;line-height:1.6;}
+
+/* suffix / prefix */
+.with-sfx{position:relative;}
+.with-sfx .fi{padding-right:52px;}
+.sfx{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11.5px;color:var(--muted);font-weight:600;pointer-events:none;}
+.with-pfx{position:relative;}
+.with-pfx .fi{padding-left:30px;}
+.pfx{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--muted);font-weight:600;pointer-events:none;}
+
+.pair{display:flex;gap:8px;}
+.pair .fi,.pair .fs{flex:1;}
+.pair .unit{flex:0 0 88px;}
+
+/* field helper */
+.fh{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:3px;margin-top:2px;}
+.fh.info{color:var(--blue);}
+.fh.warn{color:var(--warn);}
+.fh.ok{color:var(--green2);}
+
+/* calc display */
+.calc{background:var(--light);border:1.5px solid var(--border);border-radius:7px;padding:10px 13px;display:flex;align-items:center;justify-content:space-between;}
+.calc-val{font-size:13px;font-weight:700;color:var(--green2);}
+.calc-note{font-size:10.5px;color:var(--muted);}
+
+/* divider label */
+.div-lbl{display:flex;align-items:center;gap:12px;margin:18px 0 14px;}
+.div-lbl::before,.div-lbl::after{content:'';flex:1;height:1px;background:var(--border);}
+.div-lbl span{font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;white-space:nowrap;}
+
+/* radio tile */
+.crop-tiles{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;}
+.crop-tile{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 18px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;transition:all .15s;background:white;min-width:80px;}
+.crop-tile:hover{border-color:var(--green);background:var(--green-bg);}
+.crop-tile.sel{border-color:var(--green);background:var(--green-bg);}
+.crop-tile .icon{font-size:24px;}
+.crop-tile .lbl{font-size:12px;font-weight:600;color:var(--muted);}
+.crop-tile.sel .lbl{color:var(--green2);}
+
+/* category radio */
+.radio-opts{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
+.radio-opt{display:flex;align-items:center;gap:7px;padding:8px 14px;border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-size:12.5px;background:white;transition:all .15s;}
+.radio-opt:hover{border-color:var(--green);}
+.radio-opt.sel{border-color:var(--green);background:var(--green-bg);color:var(--green2);font-weight:600;}
+.radio-dot{width:15px;height:15px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.radio-opt.sel .radio-dot{border-color:var(--green);}
+.radio-opt.sel .radio-dot::after{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);display:block;}
+
+/* chips */
+.chip-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:5px;}
+.chip{padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);font-size:12px;font-weight:500;color:var(--text);background:white;cursor:pointer;transition:all .15s;}
+.chip:hover{border-color:var(--green);}
+.chip.sel{background:var(--green-bg);border-color:var(--green);color:var(--green2);font-weight:600;}
+.chip.sel-warn{background:var(--warn-bg);border-color:var(--warn);color:var(--warn);font-weight:600;}
+
+/* info banner */
+.ib{padding:12px 16px;border-radius:8px;font-size:12.5px;line-height:1.6;display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;}
+.ib.blue{background:var(--blue-bg);border-left:3px solid var(--blue);color:#1e4a7a;}
+.ib.green{background:var(--green-bg);border-left:3px solid var(--green);color:#2a5a1e;}
+.ib.warn{background:var(--warn-bg);border-left:3px solid var(--warn);color:#7a3a10;}
+.ib-ico{font-size:17px;flex-shrink:0;margin-top:1px;}
+.ib-title{font-weight:700;margin-bottom:2px;}
+
+/* upload zone */
+.upload-zone{border:2px dashed var(--border);border-radius:9px;padding:22px;text-align:center;cursor:pointer;transition:all .2s;background:white;}
+.upload-zone:hover{border-color:var(--green);background:var(--green-bg);}
+.upload-zone .uz-icon{font-size:28px;margin-bottom:8px;}
+.upload-zone .uz-title{font-size:13px;font-weight:600;color:var(--text);}
+.upload-zone .uz-sub{font-size:11px;color:var(--muted);margin-top:3px;}
+
+.uploaded-file{display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--green-bg);border:1px solid var(--green);border-radius:8px;margin-bottom:8px;}
+.uf-icon{font-size:20px;}
+.uf-name{font-size:12.5px;font-weight:600;color:var(--green2);flex:1;}
+.uf-size{font-size:11px;color:var(--muted);}
+.uf-del{font-size:16px;color:var(--red);cursor:pointer;margin-left:4px;}
+
+/* treatment row */
+.treatment-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--light);}
+.treatment-row:last-child{border-bottom:none;}
+.tr-num{width:22px;height:22px;border-radius:50%;background:var(--navy);color:white;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tr-name{flex:1;font-size:12.5px;font-weight:600;color:var(--text);}
+.tr-remove{font-size:16px;color:var(--muted);cursor:pointer;}
+.tr-remove:hover{color:var(--red);}
+
+/* supplier existing card */
+.sup-option{display:flex;align-items:center;gap:12px;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s;background:white;margin-bottom:8px;}
+.sup-option:hover{border-color:var(--green);}
+.sup-option.sel{border-color:var(--green);background:var(--green-bg);}
+.sup-logo{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;flex-shrink:0;}
+.sup-name{font-size:13px;font-weight:600;color:var(--navy);}
+.sup-meta{font-size:11px;color:var(--muted);margin-top:1px;}
+.sup-radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);margin-left:auto;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.sup-option.sel .sup-radio{border-color:var(--green);}
+.sup-option.sel .sup-radio::after{content:'';width:8px;height:8px;border-radius:50%;background:var(--green);display:block;}
+
+/* preview summary */
+.preview{background:var(--light);border:1.5px dashed var(--border);border-radius:10px;padding:18px 20px;margin-bottom:18px;}
+.preview-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.preview-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.pi-lbl{font-size:10px;color:var(--muted);font-weight:500;}
+.pi-val{font-size:13px;font-weight:600;color:var(--navy);margin-top:2px;}
+.pi-val.hi{color:var(--green2);}
+
+/* badge */
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:10.5px;font-weight:600;gap:4px;}
+.b-green{background:var(--green-bg);color:var(--green2);}
+.b-grey{background:rgba(136,137,152,.1);color:var(--muted);}
+.b-amber{background:var(--amber-bg);color:#9a6f2a;}
+.b-blue{background:var(--blue-bg);color:#2a6594;}
+
+/* action bar */
+.action-bar{background:white;border:1px solid var(--border);border-radius:10px;padding:16px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;bottom:20px;box-shadow:0 4px 24px rgba(0,0,0,.10);margin-bottom:16px;}
+.ab-left{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);}
+.ab-right{display:flex;gap:10px;}
+.btn{display:flex;align-items:center;gap:7px;padding:10px 20px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;border:none;transition:all .15s;white-space:nowrap;}
+.btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border);}
+.btn-ghost:hover{border-color:var(--red);color:var(--red);}
+.btn-out{background:white;color:var(--navy);border:1.5px solid var(--border);}
+.btn-out:hover{border-color:var(--navy);}
+.btn-dark{background:var(--navy);color:white;}
+.btn-primary{background:var(--green);color:white;}
+.btn-primary:hover{background:var(--green2);}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo">MAHATRACE</span>
+  <a href="#">Home</a>
+  <a href="#">Dashboard</a>
+  <a href="#">Crop Planning</a>
+  <a href="#" class="active">Seed Information</a>
+  <a href="#">Marketplace</a>
+  <a href="#">About us</a>
+  <div class="nav-spacer"></div>
+  <div class="nav-right">
+    <div class="nav-avatar">RK</div>
+    <div class="nav-uinfo"><span>Ramesh Kumar</span><span>AGRI-5471</span></div>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="sb-sec">Overview</div>
+    <a class="sb-item" href="#"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</a>
+    <a class="sb-item" href="#"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>My Farm</a>
+    <div class="sb-sec">Crop Management</div>
+    <a class="sb-item" href="#"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 0 0 20"/><path d="M12 2a10 10 0 0 1 0 20"/><path d="M2 12h20"/><path d="M12 2v20"/></svg>Crop Planning</a>
+    <a class="sb-item active" href="#"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Seed Information</a>
+    <a class="sb-item" href="#"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Crop Monitoring<span class="sb-badge">2</span></a>
+    <div class="sb-sec">Harvest & Dispatch</div>
+    <a class="sb-item" href="#"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>Dispatch Linkage<span class="sb-badge">3</span></a>
+    <a class="sb-item" href="#"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Invoices</a>
+    <a class="sb-item" href="#"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Track Movement</a>
+    <div class="sb-sec">Support</div>
+    <a class="sb-item" href="#"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/></svg>Advisories</a>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- ── STEPPER ── -->
+    <div class="stepper">
+      <div class="step-group-title">Form Steps</div>
+
+      <div class="step-item done">
+        <div class="step-circle done">✓</div>
+        <div class="step-body">
+          <div class="step-label done">Plot & Crop</div>
+          <div class="step-desc">Plot A · Rice<br>Kharif 2024</div>
+        </div>
+      </div>
+
+      <div class="step-item active">
+        <div class="step-circle active">2</div>
+        <div class="step-body">
+          <div class="step-label active">Seed Variety</div>
+          <div class="step-desc">Variety name, class,<br>traits & treatment</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-circle pending">3</div>
+        <div class="step-body">
+          <div class="step-label pending">Supplier Details</div>
+          <div class="step-desc">Source, contact<br>& purchase info</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-circle pending">4</div>
+        <div class="step-body">
+          <div class="step-label pending">Lot Information</div>
+          <div class="step-desc">Lot number, quantity<br>& certification</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-circle pending">5</div>
+        <div class="step-body">
+          <div class="step-label pending">Upload Invoice</div>
+          <div class="step-desc">Purchase receipt<br>& documents</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-circle pending">6</div>
+        <div class="step-body">
+          <div class="step-label pending">Review & Save</div>
+          <div class="step-desc">Confirm & register<br>seed variety</div>
+        </div>
+      </div>
+
+      <!-- context box -->
+      <div class="ctx-box">
+        <div class="ctx-title">Active Context</div>
+        <div class="ctx-row"><div class="ctx-lbl">Plot</div><div class="ctx-val">Plot A — 1.8 ha</div></div>
+        <div class="ctx-row"><div class="ctx-lbl">Crop</div><div class="ctx-val">🌾 Rice</div></div>
+        <div class="ctx-row"><div class="ctx-lbl">Season</div><div class="ctx-val">Kharif 2024</div></div>
+        <div class="ctx-row"><div class="ctx-lbl">Sowing Date</div><div class="ctx-val">Jun 12, 2024</div></div>
+      </div>
+    </div>
+
+    <!-- ── FORM AREA ── -->
+    <div class="form-area">
+
+      <div class="bc">
+        <a href="#">Dashboard</a><span>›</span>
+        <a href="#">Seed Information</a><span>›</span>
+        <span style="color:var(--text)">Add Seed Variety</span>
+      </div>
+      <div class="pg-hdr">
+        <h1>Add Seed Variety</h1>
+        <p>Plot A · Rice · Kharif 2024 · All <span style="color:var(--red)">*</span> fields are required for compliance traceability.</p>
+      </div>
+
+      <!-- ════════════════════════════════════════ -->
+      <!-- SECTION 1 — PLOT & CROP (DONE)          -->
+      <!-- ════════════════════════════════════════ -->
+      <div class="sec">
+        <div class="sec-hdr">
+          <div class="sec-num sn-done">✓</div>
+          <div><div class="sec-title">Plot & Crop Selection</div></div>
+          <div class="sec-meta"><span class="badge b-green">Completed</span></div>
+        </div>
+        <div class="sec-body">
+          <div class="g3">
+            <div class="fg"><label>Select Plot <span class="req">*</span></label><select class="fs v"><option>Plot A — Rice (1.8 ha)</option><option>Plot B — Soybean (1.4 ha)</option><option>Plot C — Cotton (1.0 ha)</option></select></div>
+            <div class="fg"><label>Crop</label><input class="fi v" value="Rice (Oryza sativa)" readonly/></div>
+            <div class="fg"><label>Season <span class="req">*</span></label><select class="fs v"><option>Kharif 2024</option><option>Rabi 2024-25</option></select></div>
+          </div>
+          <div class="g4 mt16">
+            <div class="fg"><label>Sowing Date</label><input class="fi v" value="Jun 12, 2024" readonly/></div>
+            <div class="fg"><label>Plot Area</label><input class="fi v" value="1.8 hectares" readonly/></div>
+            <div class="fg"><label>Growth Stage</label><input class="fi v" value="Panicle Initiation" readonly/></div>
+            <div class="fg"><label>Survey No.</label><input class="fi v" value="142 — Khandala Block" readonly/></div>
+          </div>
+        </div>
+        <div class="ribbon">✓ Plot A — Rice — Kharif 2024 confirmed</div>
+      </div>
+
+      <!-- ════════════════════════════════════════ -->
+      <!-- SECTION 2 — SEED VARIETY (ACTIVE)       -->
+      <!-- ════════════════════════════════════════ -->
+      <div class="sec active-sec">
+        <div class="sec-hdr active-bg">
+          <div class="sec-num sn-active">2</div>
+          <div><div class="sec-title">Seed Variety Details</div></div>
+          <div class="sec-meta" style="font-size:12px;color:var(--navy);font-weight:600;">Currently filling</div>
+        </div>
+        <div class="sec-body">
+
+          <div class="ib blue mb16">
+            <span class="ib-ico">💡</span>
+            <div><div class="ib-title">Tip — What counts as Seed Information?</div>Record the exact variety name, seed class (certified/truthfully labelled), germination %, and any treatment applied. This is cross-verified during FPO inspection and lot traceability.</div>
+          </div>
+
+          <!-- Variety name + Crop type -->
+          <div class="g2 mb16">
+            <div class="fg">
+              <label>Seed Variety Name <span class="req">*</span></label>
+              <input class="fi v" type="text" value="Swarna MTU7029" placeholder="e.g. Swarna MTU7029, IR64, BPT 5204…"/>
+              <div class="fh ok">✓ Recognised variety — ANGRAU certified</div>
+            </div>
+            <div class="fg">
+              <label>Local / Trade Name <span class="opt">(optional)</span></label>
+              <input class="fi" type="text" placeholder="e.g. Samba, Masoori…"/>
+              <div class="fh">Common name used in your region</div>
+            </div>
+          </div>
+
+          <!-- Seed category radio -->
+          <div class="fg mb16">
+            <label>Seed Category <span class="req">*</span></label>
+            <div class="radio-opts">
+              <div class="radio-opt sel"><div class="radio-dot"></div>Certified Seed (CS)</div>
+              <div class="radio-opt"><div class="radio-dot"></div>Foundation Seed (FS)</div>
+              <div class="radio-opt"><div class="radio-dot"></div>Truthfully Labelled (TL)</div>
+              <div class="radio-opt"><div class="radio-dot"></div>Farm Saved Seed</div>
+              <div class="radio-opt"><div class="radio-dot"></div>Hybrid</div>
+            </div>
+          </div>
+
+          <!-- 3-col details row -->
+          <div class="g3 mb16">
+            <div class="fg">
+              <label>Variety Type <span class="req">*</span></label>
+              <select class="fs v">
+                <option selected>High Yielding Variety (HYV)</option>
+                <option>Traditional / Indigenous</option>
+                <option>Hybrid</option>
+                <option>Bt Variety</option>
+                <option>Organic / OP</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label>Crop Duration <span class="req">*</span></label>
+              <div class="with-sfx">
+                <input class="fi v" type="text" value="145"/>
+                <span class="sfx">days</span>
+              </div>
+              <div class="fh info">ℹ Medium-long duration variety</div>
+            </div>
+            <div class="fg">
+              <label>Developed By <span class="opt">(optional)</span></label>
+              <input class="fi v" type="text" value="ANGRAU, Hyderabad"/>
+            </div>
+          </div>
+
+          <!-- Seed rate + qty + germination -->
+          <div class="div-lbl"><span>Quantity & Germination</span></div>
+          <div class="g4 mb16">
+            <div class="fg">
+              <label>Seed Rate <span class="req">*</span></label>
+              <div class="with-sfx"><input class="fi v" type="text" value="25"/><span class="sfx">kg/ha</span></div>
+              <div class="fh info">ℹ Recommended for transplant method</div>
+            </div>
+            <div class="fg">
+              <label>Qty Purchased <span class="req">*</span></label>
+              <div class="pair">
+                <input class="fi v" type="text" value="45"/>
+                <select class="fs v unit"><option>kg</option><option>g</option><option>packets</option></select>
+              </div>
+            </div>
+            <div class="fg">
+              <label>Qty Used / Sown <span class="req">*</span></label>
+              <div class="pair">
+                <input class="fi v" type="text" value="45"/>
+                <select class="fs v unit"><option>kg</option><option>g</option><option>packets</option></select>
+              </div>
+              <div class="fh ok">✓ 100% of purchased qty used</div>
+            </div>
+            <div class="fg">
+              <label>Germination Rate <span class="opt">(optional)</span></label>
+              <div class="with-sfx"><input class="fi v" type="text" value="94"/><span class="sfx">%</span></div>
+              <div class="fh ok">✓ Above minimum 85% standard</div>
+            </div>
+          </div>
+
+          <!-- Agronomic traits -->
+          <div class="div-lbl"><span>Agronomic Traits</span></div>
+          <div class="g3 mb16">
+            <div class="fg">
+              <label>Yield Potential <span class="opt">(optional)</span></label>
+              <div class="with-sfx"><input class="fi" type="text" placeholder="e.g. 5–6"/><span class="sfx">t/ha</span></div>
+            </div>
+            <div class="fg">
+              <label>Plant Height <span class="opt">(optional)</span></label>
+              <div class="with-sfx"><input class="fi" type="text" placeholder="e.g. 80–100"/><span class="sfx">cm</span></div>
+            </div>
+            <div class="fg">
+              <label>Grain Type <span class="opt">(optional)</span></label>
+              <input class="fi" type="text" placeholder="e.g. Medium bold, non-aromatic"/>
+            </div>
+          </div>
+
+          <!-- Disease resistance chips -->
+          <div class="fg mb16">
+            <label>Disease / Pest Resistance <span class="opt">(select all applicable)</span></label>
+            <div class="chip-row">
+              <span class="chip sel">BLB Resistant</span>
+              <span class="chip sel">Brown Planthopper</span>
+              <span class="chip sel-warn">Blast Susceptible</span>
+              <span class="chip sel-warn">Sheath Blight</span>
+              <span class="chip">Gall Midge</span>
+              <span class="chip sel">Tungro Tolerant</span>
+              <span class="chip">Stem Borer</span>
+              <span class="chip">Drought Tolerant</span>
+              <span class="chip">Flood Tolerant</span>
+            </div>
+          </div>
+
+          <!-- Seed treatment -->
+          <div class="div-lbl"><span>Seed Treatment</span></div>
+          <div class="fg mb16">
+            <label>Was seed treatment applied? <span class="req">*</span></label>
+            <div class="radio-opts">
+              <div class="radio-opt sel"><div class="radio-dot"></div>Yes — treatment applied</div>
+              <div class="radio-opt"><div class="radio-dot"></div>No — not treated</div>
+            </div>
+          </div>
+
+          <!-- Treatment rows -->
+          <div style="background:var(--light);border-radius:8px;padding:14px 16px;margin-bottom:16px;">
+            <div style="font-size:11.5px;font-weight:700;color:var(--navy);margin-bottom:12px;">Treatment Products Applied</div>
+
+            <div class="treatment-row">
+              <div class="tr-num">1</div>
+              <div style="flex:1;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px;align-items:center;">
+                <div class="fg" style="gap:3px"><label style="font-size:10.5px;">Product Name</label><input class="fi v" style="padding:7px 10px;" value="Carbendazim 50% WP"/></div>
+                <div class="fg" style="gap:3px"><label style="font-size:10.5px;">Dosage</label><div class="with-sfx"><input class="fi v" style="padding:7px 10px;" value="2"/><span class="sfx" style="font-size:10.5px;">g/kg</span></div></div>
+                <div class="fg" style="gap:3px"><label style="font-size:10.5px;">Purpose</label><input class="fi v" style="padding:7px 10px;" value="Blast / Rot"/></div>
+                <div class="fg" style="gap:3px"><label style="font-size:10.5px;">Date</label><input class="fi v" type="date" style="padding:7px 10px;" value="2024-06-07"/></div>
+              </div>
+              <span class="tr-remove">✕</span>
+            </div>
+
+            <div class="treatment-row">
+              <div class="tr-num">2</div>
+              <div style="flex:1;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px;align-items:center;">
+                <div class="fg" style="gap:3px"><label style="font-size:10.5px;">Product Name</label><input class="fi v" style="padding:7px 10px;" value="Trichoderma viride"/></div>
+                <div class="fg" style="gap:3px"><label style="font-size:10.5px;">Dosage</label><div class="with-sfx"><input class="fi v" style="padding:7px 10px;" value="4"/><span class="sfx" style="font-size:10.5px;">g/kg</span></div></div>
+                <div class="fg" style="gap:3px"><label style="font-size:10.5px;">Purpose</label><input class="fi v" style="padding:7px 10px;" value="Root health"/></div>
+                <div class="fg" style="gap:3px"><label style="font-size:10.5px;">Date</label><input class="fi v" type="date" style="padding:7px 10px;" value="2024-06-07"/></div>
+              </div>
+              <span class="tr-remove">✕</span>
+            </div>
+
+            <div class="treatment-row">
+              <div class="tr-num">3</div>
+              <div style="flex:1;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px;align-items:center;">
+                <div class="fg" style="gap:3px"><label style="font-size:10.5px;">Product Name</label><input class="fi" style="padding:7px 10px;" placeholder="e.g. Imidacloprid 600 FS"/></div>
+                <div class="fg" style="gap:3px"><label style="font-size:10.5px;">Dosage</label><div class="with-sfx"><input class="fi" style="padding:7px 10px;" placeholder="—"/><span class="sfx" style="font-size:10.5px;">g/kg</span></div></div>
+                <div class="fg" style="gap:3px"><label style="font-size:10.5px;">Purpose</label><input class="fi" style="padding:7px 10px;" placeholder="e.g. Insect"/></div>
+                <div class="fg" style="gap:3px"><label style="font-size:10.5px;">Date</label><input class="fi" type="date" style="padding:7px 10px;"/></div>
+              </div>
+              <span class="tr-remove">✕</span>
+            </div>
+
+            <button style="margin-top:10px;background:none;border:1.5px dashed var(--border);border-radius:7px;padding:7px 16px;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;">+ Add another treatment</button>
+          </div>
+
+          <!-- Notes -->
+          <div class="fg">
+            <label>Additional Notes <span class="opt">(optional)</span></label>
+            <textarea class="ft" placeholder="e.g. Seeds sourced from IARI authorised dealer. Germination tested at NSAI-certified lab. Seed lot stored at 15°C before sowing…"></textarea>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════ -->
+      <!-- SECTION 3 — SUPPLIER DETAILS (DIM)      -->
+      <!-- ════════════════════════════════════════ -->
+      <div class="sec dimmed">
+        <div class="sec-hdr">
+          <div class="sec-num sn-pending">3</div>
+          <div><div class="sec-title">Supplier Details</div></div>
+          <div class="sec-meta"><span class="badge b-grey">Not started</span></div>
+        </div>
+        <div class="sec-body">
+
+          <div class="fg mb16">
+            <label>Select from existing suppliers</label>
+            <div class="sup-option sel">
+              <div class="sup-logo" style="background:#3d7a28;">AS</div>
+              <div style="flex:1"><div class="sup-name">Agri Seeds Ltd</div><div class="sup-meta">Certified rice & HYV varieties · Pune · 3 previous purchases</div></div>
+              <div class="sup-radio"></div>
+            </div>
+            <div class="sup-option">
+              <div class="sup-logo" style="background:#4a8fcc;">SF</div>
+              <div style="flex:1"><div class="sup-name">State Farm Corp</div><div class="sup-meta">Pulses & oilseeds · Nashik · 5 previous purchases</div></div>
+              <div class="sup-radio"></div>
+            </div>
+            <div class="sup-option">
+              <div class="sup-logo" style="background:#888998;">+</div>
+              <div style="flex:1"><div class="sup-name" style="color:var(--muted);">Add new supplier</div><div class="sup-meta">Enter supplier details manually</div></div>
+              <div class="sup-radio"></div>
+            </div>
+          </div>
+
+          <div class="div-lbl"><span>Supplier Contact & Address</span></div>
+          <div class="g3 mb16">
+            <div class="fg"><label>Supplier Name <span class="req">*</span></label><input class="fi v" value="Agri Seeds Ltd"/></div>
+            <div class="fg"><label>Contact Person</label><input class="fi v" value="Mr. Shankar Rao"/></div>
+            <div class="fg"><label>Mobile Number</label><input class="fi v" value="+91 98765 43210"/></div>
+          </div>
+          <div class="g2 mb16">
+            <div class="fg"><label>Address</label><input class="fi v" value="Plot 14, MIDC, Pune — 411019"/></div>
+            <div class="fg"><label>Dealer Licence No. <span class="opt">(optional)</span></label><input class="fi" placeholder="e.g. DL-MH-2024-0443"/></div>
+          </div>
+
+          <div class="div-lbl"><span>Purchase Information</span></div>
+          <div class="g4">
+            <div class="fg"><label>Purchase Date <span class="req">*</span></label><input class="fi v" type="date" value="2024-06-02"/></div>
+            <div class="fg"><label>Rate per kg <span class="req">*</span></label><div class="with-pfx"><span class="pfx">₹</span><input class="fi v" value="50"/></div></div>
+            <div class="fg"><label>Total Seed Cost</label><div class="calc"><span class="calc-val">₹2,250</span><span class="calc-note">45 kg × ₹50</span></div></div>
+            <div class="fg"><label>Payment Mode</label><select class="fs v"><option>UPI / Online</option><option>Cash</option><option>Credit</option></select></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════ -->
+      <!-- SECTION 4 — LOT INFORMATION (DIM)       -->
+      <!-- ════════════════════════════════════════ -->
+      <div class="sec dimmed">
+        <div class="sec-hdr">
+          <div class="sec-num sn-pending">4</div>
+          <div><div class="sec-title">Lot Information</div></div>
+          <div class="sec-meta"><span class="badge b-grey">Not started</span></div>
+        </div>
+        <div class="sec-body">
+
+          <div class="ib blue mb16" style="margin-bottom:16px">
+            <span class="ib-ico">📦</span>
+            <div><div class="ib-title">Why lot information matters</div>Lot numbers link your seed batch to its source, allowing end-to-end traceability from farm to buyer. Required for certification and FPO compliance checks.</div>
+          </div>
+
+          <div class="g3 mb16">
+            <div class="fg">
+              <label>Seed Lot Number <span class="req">*</span></label>
+              <input class="fi v" value="LOT-SC-2024-0081" placeholder="As printed on seed bag / tag"/>
+              <div class="fh ok">✓ Unique lot ID for traceability</div>
+            </div>
+            <div class="fg">
+              <label>Tag / Label Number <span class="opt">(optional)</span></label>
+              <input class="fi" placeholder="e.g. TAG-2024-MH-0291"/>
+            </div>
+            <div class="fg">
+              <label>Certification Body <span class="opt">(optional)</span></label>
+              <input class="fi v" value="ANGRAU Seed Certification"/>
+            </div>
+          </div>
+
+          <div class="g4 mb16">
+            <div class="fg">
+              <label>Bag / Packet Size</label>
+              <div class="with-sfx"><input class="fi v" value="5"/><span class="sfx">kg/bag</span></div>
+            </div>
+            <div class="fg">
+              <label>No. of Bags <span class="req">*</span></label>
+              <input class="fi v" value="9" type="number"/>
+              <div class="fh">9 bags × 5 kg = 45 kg</div>
+            </div>
+            <div class="fg">
+              <label>Storage Condition</label>
+              <select class="fs v"><option>Cool & dry (15°C)</option><option>Ambient</option><option>Cold storage</option></select>
+            </div>
+            <div class="fg">
+              <label>Expiry / Use-by Date</label>
+              <input class="fi v" type="date" value="2025-03-31"/>
+            </div>
+          </div>
+
+          <div class="g3">
+            <div class="fg">
+              <label>Lot Certification Status <span class="req">*</span></label>
+              <div class="radio-opts">
+                <div class="radio-opt sel"><div class="radio-dot"></div>Certified</div>
+                <div class="radio-opt"><div class="radio-dot"></div>Truthfully Labelled</div>
+                <div class="radio-opt"><div class="radio-dot"></div>Pending</div>
+              </div>
+            </div>
+            <div class="fg">
+              <label>Lot Germination % (from tag)</label>
+              <div class="with-sfx"><input class="fi v" value="94"/><span class="sfx">%</span></div>
+            </div>
+            <div class="fg">
+              <label>Lot Purity % (from tag)</label>
+              <div class="with-sfx"><input class="fi v" value="99.2"/><span class="sfx">%</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════ -->
+      <!-- SECTION 5 — UPLOAD INVOICE (DIM)        -->
+      <!-- ════════════════════════════════════════ -->
+      <div class="sec dimmed">
+        <div class="sec-hdr">
+          <div class="sec-num sn-pending">5</div>
+          <div><div class="sec-title">Upload Invoice & Documents</div><div style="font-size:11.5px;color:var(--muted);margin-top:2px;">Optional — but strongly recommended for compliance</div></div>
+          <div class="sec-meta"><span class="badge b-grey">Not started</span></div>
+        </div>
+        <div class="sec-body">
+
+          <div class="ib green mb16">
+            <span class="ib-ico">✅</span>
+            <div><div class="ib-title">Uploading documents improves your compliance score</div>Uploading purchase invoices, seed certification tags, and germination reports can raise your compliance score by up to 18 points and speeds up FPO inspection.</div>
+          </div>
+
+          <div class="g2 mb16">
+            <!-- Purchase Invoice -->
+            <div class="fg">
+              <label style="margin-bottom:8px;display:block;">Purchase Invoice <span class="opt">(optional)</span></label>
+              <div class="uploaded-file">
+                <span class="uf-icon">🧾</span>
+                <span class="uf-name">invoice_agri_seeds_jun2024.pdf</span>
+                <span class="uf-size">124 KB</span>
+                <span class="uf-del">✕</span>
+              </div>
+              <div class="fh ok" style="margin-top:4px;">✓ Uploaded successfully</div>
+            </div>
+
+            <!-- Seed Certification Tag -->
+            <div class="fg">
+              <label style="margin-bottom:8px;display:block;">Seed Certification Tag <span class="opt">(optional)</span></label>
+              <div class="uploaded-file">
+                <span class="uf-icon">📜</span>
+                <span class="uf-name">cert_tag_swarna_mtu7029.jpg</span>
+                <span class="uf-size">88 KB</span>
+                <span class="uf-del">✕</span>
+              </div>
+              <div class="fh ok" style="margin-top:4px;">✓ Uploaded successfully</div>
+            </div>
+          </div>
+
+          <div class="g2 mb16">
+            <!-- Germination Test Report -->
+            <div class="fg">
+              <label style="margin-bottom:8px;display:block;">Germination Test Report <span class="opt">(optional)</span></label>
+              <div class="upload-zone">
+                <div class="uz-icon">🔬</div>
+                <div class="uz-title">Drop file here or click to upload</div>
+                <div class="uz-sub">PDF, JPG, PNG — max 5 MB</div>
+              </div>
+            </div>
+
+            <!-- Other Documents -->
+            <div class="fg">
+              <label style="margin-bottom:8px;display:block;">Other Supporting Documents <span class="opt">(optional)</span></label>
+              <div class="upload-zone" style="min-height:96px;">
+                <div class="uz-icon">📎</div>
+                <div class="uz-title">Delivery challan, warranty card, etc.</div>
+                <div class="uz-sub">PDF, JPG, PNG — max 5 MB</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Document checklist -->
+          <div style="background:var(--light);border-radius:8px;padding:14px 16px;">
+            <div style="font-size:11.5px;font-weight:700;color:var(--navy);margin-bottom:10px;">Document Checklist</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;align-items:center;gap:10px;font-size:12.5px;"><span style="color:var(--green2);font-size:15px;">✓</span> Purchase Invoice — uploaded</div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:12.5px;"><span style="color:var(--green2);font-size:15px;">✓</span> Seed Certification Tag — uploaded</div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--muted)"><span style="font-size:15px;">○</span> Germination Test Report — not uploaded (optional)</div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--muted)"><span style="font-size:15px;">○</span> Dealer Licence Copy — not uploaded (optional)</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ════════════════════════════════════════ -->
+      <!-- SECTION 6 — REVIEW & SAVE (DIM)         -->
+      <!-- ════════════════════════════════════════ -->
+      <div class="sec dimmed">
+        <div class="sec-hdr">
+          <div class="sec-num sn-pending">6</div>
+          <div><div class="sec-title">Review & Save</div></div>
+          <div class="sec-meta"><span class="badge b-grey">Not started</span></div>
+        </div>
+        <div class="sec-body">
+
+          <div class="preview">
+            <div class="preview-title">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Seed Record Summary
+            </div>
+            <div class="preview-grid">
+              <div><div class="pi-lbl">Plot</div><div class="pi-val">Plot A — 1.8 ha</div></div>
+              <div><div class="pi-lbl">Crop</div><div class="pi-val">🌾 Rice</div></div>
+              <div><div class="pi-lbl">Variety</div><div class="pi-val">Swarna MTU7029</div></div>
+              <div><div class="pi-lbl">Category</div><div class="pi-val">Certified Seed</div></div>
+              <div><div class="pi-lbl">Qty Purchased</div><div class="pi-val hi">45 kg</div></div>
+              <div><div class="pi-lbl">Germination</div><div class="pi-val hi">94%</div></div>
+              <div><div class="pi-lbl">Supplier</div><div class="pi-val">Agri Seeds Ltd</div></div>
+              <div><div class="pi-lbl">Seed Cost</div><div class="pi-val hi">₹2,250</div></div>
+              <div><div class="pi-lbl">Lot Number</div><div class="pi-val">LOT-SC-2024-0081</div></div>
+              <div><div class="pi-lbl">Certification</div><div class="pi-val">ANGRAU Certified</div></div>
+              <div><div class="pi-lbl">Treatment</div><div class="pi-val">2 products applied</div></div>
+              <div><div class="pi-lbl">Documents</div><div class="pi-val">2 uploaded</div></div>
+            </div>
+          </div>
+
+          <div class="fg">
+            <label>Compliance Declaration <span class="req">*</span></label>
+            <div style="display:flex;align-items:flex-start;gap:12px;padding:13px 16px;background:var(--green-bg);border:1px solid var(--green);border-radius:8px;margin-top:4px;">
+              <div style="width:17px;height:17px;border-radius:4px;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;"><span style="font-size:10px;color:white;font-weight:700;">✓</span></div>
+              <span style="font-size:12.5px;line-height:1.6;color:var(--text);">I confirm that the seed variety, supplier, lot, and quantity information entered above is accurate to the best of my knowledge. I understand this record will be used for traceability and may be verified during FPO inspection.</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ACTION BAR -->
+      <div class="action-bar">
+        <div class="ab-left">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Last saved as draft · 3 minutes ago · Step 2 of 6
+        </div>
+        <div class="ab-right">
+          <button class="btn btn-ghost">✕  Discard</button>
+          <button class="btn btn-out">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Save Draft
+          </button>
+          <button class="btn btn-dark">
+            Next: Supplier Details
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+          <button class="btn btn-primary">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Register Seed Variety
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /form-area -->
+  </main>
+</div>
+
+</body>
+</html>
