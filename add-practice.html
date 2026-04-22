@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=1280"/>
+<title>Mahatrace – Add Practice (POP)</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --navy:     #0d2030;
+  --navy2:    #0a1a27;
+  --green:    #6aab4c;
+  --green2:   #4e8e34;
+  --green-bg: #edf5e9;
+  --amber:    #c79548;
+  --amber-bg: #fdf3e3;
+  --bg:       #e7ebe1;
+  --card:     #ffffff;
+  --muted:    #888998;
+  --text:     #10181f;
+  --light:    #f4f6f0;
+  --border:   #d6dbd0;
+  --warn:     #e07b3c;
+  --warn-bg:  #fef0e7;
+  --red:      #d64040;
+  --red-bg:   #fdeaea;
+  --blue:     #4a8fcc;
+  --blue-bg:  #e8f2fa;
+}
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── NAVBAR ── */
+nav {
+  background: var(--navy);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+  gap: 36px;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,.28);
+}
+.nav-logo {
+  background: var(--green);
+  color: white;
+  font-family: 'DM Serif Display', serif;
+  font-size: 17px;
+  padding: 6px 14px;
+  border-radius: 4px;
+  margin-right: 10px;
+  letter-spacing: .4px;
+}
+nav a {
+  color: #ede7dc;
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 500;
+  opacity: .75;
+}
+nav a.active { opacity: 1; color: #fff; border-bottom: 2px solid var(--green); padding-bottom: 2px; }
+.nav-spacer { flex: 1; }
+.nav-right { display: flex; align-items: center; gap: 12px; }
+.nav-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--amber);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; color: white; font-size: 12px;
+}
+.nav-user span:first-child { font-size: 13px; font-weight: 600; color: #fff; display: block; }
+.nav-user span:last-child  { font-size: 10.5px; color: var(--muted); display: block; }
+
+/* ── LAYOUT ── */
+.page { display: grid; grid-template-columns: 224px 1fr; min-height: calc(100vh - 64px); }
+
+/* ── SIDEBAR ── */
+aside {
+  background: var(--navy2);
+  padding: 24px 0;
+  display: flex; flex-direction: column; gap: 2px;
+  position: sticky; top: 64px; height: calc(100vh - 64px); overflow-y: auto;
+}
+.sb-section {
+  font-size: 9.5px; font-weight: 700; letter-spacing: 1.3px;
+  text-transform: uppercase; color: rgba(255,255,255,.28);
+  padding: 14px 24px 5px;
+}
+.sb-item {
+  display: flex; align-items: center; gap: 11px;
+  padding: 9px 24px;
+  color: rgba(255,255,255,.58);
+  font-size: 13px; font-weight: 500;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  text-decoration: none;
+}
+.sb-item.active {
+  background: rgba(106,171,76,.13);
+  color: var(--green);
+  border-left-color: var(--green);
+  font-weight: 600;
+}
+.sb-badge {
+  margin-left: auto; background: var(--warn); color: white;
+  font-size: 9.5px; font-weight: 700; padding: 2px 6px; border-radius: 10px;
+}
+
+/* ── MAIN ── */
+main { padding: 30px 34px; display: flex; flex-direction: column; gap: 0; }
+
+/* ── BREADCRUMB ── */
+.breadcrumb {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--muted); margin-bottom: 16px;
+}
+.breadcrumb a { color: var(--green); text-decoration: none; font-weight: 500; }
+.breadcrumb span { color: var(--border); }
+
+/* ── STEP HEADER ── */
+.step-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 24px;
+}
+.step-header-left h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 24px; font-weight: 400; color: var(--navy);
+}
+.step-header-left p { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+/* ── PROGRESS STEPPER ── */
+.stepper {
+  display: flex; align-items: center; gap: 0;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 24px;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+.step {
+  display: flex; align-items: center; gap: 10px; flex: 1;
+  position: relative;
+}
+.step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: calc(100% - 0px);
+  top: 50%; transform: translateY(-50%);
+  width: 100%; height: 2px;
+  background: var(--border);
+  z-index: 0;
+}
+.step.done:not(:last-child)::after  { background: var(--green); }
+.step.active:not(:last-child)::after { background: var(--border); }
+.step-circle {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+  flex-shrink: 0; z-index: 1;
+  border: 2px solid var(--border);
+  background: white; color: var(--muted);
+}
+.step.done   .step-circle { background: var(--green); border-color: var(--green); color: white; }
+.step.active .step-circle { background: var(--navy);  border-color: var(--navy);  color: white; }
+.step-label { font-size: 11.5px; font-weight: 500; color: var(--muted); }
+.step.done   .step-label  { color: var(--green2); }
+.step.active .step-label  { color: var(--navy); font-weight: 700; }
+
+/* ── FORM GRID ── */
+.form-grid {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* ── LEFT PANEL: context ── */
+.context-panel {
+  display: flex; flex-direction: column; gap: 16px;
+  position: sticky; top: 84px;
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--card);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.card-header {
+  padding: 16px 20px 13px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-title { font-size: 13px; font-weight: 700; color: var(--navy); }
+.card-body  { padding: 18px 20px; }
+
+/* ── PLOT SELECTOR ── */
+.plot-option {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all .15s;
+  margin-bottom: 8px;
+}
+.plot-option:last-child { margin-bottom: 0; }
+.plot-option:hover  { border-color: var(--green); }
+.plot-option.selected {
+  border-color: var(--green);
+  background: var(--green-bg);
+}
+.plot-dot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+}
+.plot-option-info { flex: 1; }
+.plot-option-name { font-size: 13px; font-weight: 600; color: var(--navy); }
+.plot-option-sub  { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.plot-radio {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.plot-option.selected .plot-radio {
+  border-color: var(--green);
+  background: var(--green);
+}
+.plot-option.selected .plot-radio::after {
+  content: ''; width: 6px; height: 6px;
+  background: white; border-radius: 50%;
+}
+
+/* ── SEASON CONTEXT CARD ── */
+.context-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 0; border-bottom: 1px solid var(--light);
+  font-size: 12px;
+}
+.context-row:last-child { border-bottom: none; }
+.context-key   { color: var(--muted); font-weight: 500; }
+.context-value { font-weight: 600; color: var(--text); }
+
+/* ── STAGE PROGRESS ── */
+.stage-track {
+  display: flex; gap: 3px; margin-top: 8px;
+}
+.stage-seg {
+  flex: 1; height: 6px; border-radius: 2px;
+}
+
+/* ── EXISTING POP SUMMARY ── */
+.pop-mini-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 0; border-bottom: 1px solid var(--light);
+}
+.pop-mini-row:last-child { border-bottom: none; }
+.pop-check {
+  width: 18px; height: 18px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700; flex-shrink: 0;
+}
+.pop-check.done    { background: var(--green-bg);  color: var(--green2); }
+.pop-check.overdue { background: var(--red-bg);    color: var(--red);    }
+.pop-check.plan    { background: var(--light);     color: var(--muted);  }
+.pop-mini-name  { flex: 1; font-size: 11.5px; font-weight: 500; color: var(--text); }
+.pop-mini-stage { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px; }
+
+/* ── RIGHT PANEL: form ── */
+.right-panel { display: flex; flex-direction: column; gap: 20px; }
+
+/* ── FORM SECTION ── */
+.form-section {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.form-section-header {
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+  background: var(--light);
+}
+.form-section-num {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--navy); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; flex-shrink: 0;
+}
+.form-section-num.done { background: var(--green); }
+.form-section-title {
+  font-size: 13px; font-weight: 700; color: var(--navy);
+}
+.form-section-sub { font-size: 11px; color: var(--muted); margin-left: auto; }
+.form-section-body { padding: 20px 22px; display: flex; flex-direction: column; gap: 16px; }
+
+/* ── FORM ELEMENTS ── */
+.form-row   { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.form-row-14{ display: grid; grid-template-columns: 1fr 3fr; gap: 16px; }
+
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-label {
+  font-size: 11.5px; font-weight: 600; color: var(--text);
+  display: flex; align-items: center; gap: 4px;
+}
+.form-label .req   { color: var(--red); }
+.form-label .tip   { font-weight: 400; color: var(--muted); font-size: 10.5px; margin-left: 2px; }
+.form-hint { font-size: 10.5px; color: var(--muted); margin-top: 3px; }
+.form-hint.warn { color: var(--warn); }
+
+.form-input {
+  width: 100%; padding: 9px 12px;
+  border: 1.5px solid var(--border); border-radius: 7px;
+  font-size: 13px; font-family: 'DM Sans', sans-serif;
+  color: var(--text); background: white; outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.form-input:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(106,171,76,.12);
+}
+.form-input.filled  { background: var(--light); border-color: var(--border); }
+.form-input.error   { border-color: var(--red);  background: var(--red-bg); }
+.form-input.success { border-color: var(--green); }
+.form-input[disabled]{ background: var(--light); color: var(--muted); cursor: not-allowed; }
+
+.form-select {
+  width: 100%; padding: 9px 32px 9px 12px;
+  border: 1.5px solid var(--border); border-radius: 7px;
+  font-size: 13px; font-family: 'DM Sans', sans-serif;
+  color: var(--text); background: white
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E")
+    no-repeat right 12px center;
+  appearance: none; outline: none;
+  transition: border-color .15s;
+}
+.form-select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(106,171,76,.12); }
+.form-select.filled { background-color: var(--light); }
+
+textarea.form-input {
+  resize: vertical; min-height: 82px; line-height: 1.5;
+}
+
+/* ── ACTIVITY TYPE TILES ── */
+.type-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+.type-tile {
+  border: 1.5px solid var(--border);
+  border-radius: 9px;
+  padding: 12px 8px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .15s;
+}
+.type-tile:hover   { border-color: var(--green); }
+.type-tile.selected {
+  border-color: var(--green);
+  background: var(--green-bg);
+  box-shadow: 0 0 0 3px rgba(106,171,76,.1);
+}
+.type-tile-icon  { font-size: 22px; display: block; margin-bottom: 6px; }
+.type-tile-label { font-size: 11px; font-weight: 600; color: var(--text); }
+.type-tile.selected .type-tile-label { color: var(--green2); }
+
+/* ── STAGE SELECTOR ── */
+.stage-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.stage-option {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 7px; cursor: pointer;
+  transition: all .15s; font-size: 12px; font-weight: 500;
+}
+.stage-option:hover { border-color: var(--green); }
+.stage-option.selected {
+  border-color: var(--navy);
+  background: rgba(13,32,48,.05);
+  color: var(--navy); font-weight: 700;
+}
+.stage-option.selected .stage-dot { border-color: var(--navy); background: var(--navy); }
+.stage-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid var(--border); flex-shrink: 0;
+}
+
+/* ── INPUT PRODUCT ROW ── */
+.product-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 36px;
+  gap: 10px;
+  align-items: end;
+  padding: 14px 16px;
+  background: var(--light);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  position: relative;
+}
+.product-row + .product-row { margin-top: 10px; }
+.product-row-num {
+  position: absolute;
+  top: -9px; left: 12px;
+  background: var(--navy); color: white;
+  font-size: 9.5px; font-weight: 700;
+  padding: 1px 7px; border-radius: 10px;
+}
+.btn-remove {
+  width: 32px; height: 32px; border-radius: 6px;
+  background: var(--red-bg); border: 1px solid rgba(214,64,64,.2);
+  color: var(--red); cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+  font-size: 16px; line-height: 1;
+  font-family: 'DM Sans', sans-serif;
+  margin-bottom: 1px;
+}
+.btn-add-product {
+  display: flex; align-items: center; gap: 7px;
+  width: 100%; padding: 9px 14px;
+  border: 1.5px dashed var(--border);
+  border-radius: 8px; background: none;
+  color: var(--muted); font-size: 12.5px; font-weight: 500;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: all .15s;
+}
+.btn-add-product:hover { border-color: var(--green); color: var(--green); }
+
+/* ── CALCULATED COST PILL ── */
+.calc-cost {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px;
+  background: var(--green-bg);
+  border: 1px solid rgba(106,171,76,.3);
+  border-radius: 7px;
+  font-size: 12.5px; font-weight: 600; color: var(--green2);
+}
+.calc-cost span { color: var(--muted); font-weight: 400; font-size: 11.5px; }
+
+/* ── WEATHER CONTEXT BAR ── */
+.weather-bar {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+}
+.weather-tile {
+  background: var(--light); border: 1px solid var(--border);
+  border-radius: 8px; padding: 11px 13px;
+  cursor: pointer; transition: all .15s;
+}
+.weather-tile:hover  { border-color: var(--green); }
+.weather-tile.selected {
+  border-color: var(--green); background: var(--green-bg);
+}
+.weather-tile-icon  { font-size: 20px; display: block; margin-bottom: 4px; }
+.weather-tile-label { font-size: 11px; font-weight: 600; color: var(--text); }
+.weather-tile-temp  { font-size: 10.5px; color: var(--muted); margin-top: 2px; }
+.weather-tile.selected .weather-tile-label { color: var(--green2); }
+
+/* ── CHIP TAGS ── */
+.chip-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  padding: 5px 12px; border-radius: 20px;
+  font-size: 11.5px; font-weight: 500;
+  background: var(--light); border: 1.5px solid var(--border);
+  color: var(--text); cursor: pointer; transition: all .15s;
+}
+.chip:hover    { border-color: var(--green); color: var(--green2); }
+.chip.selected {
+  background: var(--green-bg); border-color: var(--green); color: var(--green2);
+}
+
+/* ── COMPLIANCE CHECKLIST ── */
+.compliance-list { display: flex; flex-direction: column; gap: 10px; }
+.compliance-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 14px;
+  border-radius: 7px; border: 1px solid var(--border);
+  background: var(--light);
+}
+.compliance-item.required { border-color: rgba(214,64,64,.25); background: var(--red-bg); }
+.compliance-item.ok       { border-color: rgba(106,171,76,.25); background: var(--green-bg); }
+.comp-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.comp-title { font-size: 12px; font-weight: 600; color: var(--text); }
+.comp-desc  { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* ── ACTION BAR ── */
+.action-bar {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 22px;
+  display: flex; align-items: center; gap: 14px;
+}
+.action-bar-left  { flex: 1; display: flex; gap: 10px; align-items: center; }
+.action-bar-right { display: flex; gap: 10px; }
+
+.btn-ghost {
+  display: flex; align-items: center; gap: 6px;
+  padding: 9px 18px; border-radius: 6px;
+  border: 1.5px solid var(--border);
+  background: white; color: var(--muted);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: all .15s;
+}
+.btn-ghost:hover { border-color: var(--navy); color: var(--navy); }
+
+.btn-secondary {
+  display: flex; align-items: center; gap: 6px;
+  padding: 9px 18px; border-radius: 6px;
+  border: 1.5px solid var(--navy);
+  background: white; color: var(--navy);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: all .15s;
+}
+.btn-secondary:hover { background: var(--navy); color: white; }
+
+.btn-primary {
+  display: flex; align-items: center; gap: 7px;
+  padding: 10px 22px; border-radius: 6px;
+  background: var(--green); color: white; border: none;
+  font-size: 13px; font-weight: 700; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: background .15s;
+}
+.btn-primary:hover { background: var(--green2); }
+
+.btn-primary.large {
+  padding: 12px 28px; font-size: 14px;
+}
+
+/* ── DIVIDER ── */
+.divider {
+  height: 1px; background: var(--border); margin: 4px 0;
+}
+.section-divider {
+  display: flex; align-items: center; gap: 12px; margin: 4px 0;
+}
+.section-divider::before,
+.section-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+.section-divider span {
+  font-size: 11px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .6px; white-space: nowrap;
+}
+
+/* ── BADGE ── */
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 10.5px; font-weight: 600;
+}
+.badge-green { background: var(--green-bg); color: var(--green2); }
+.badge-amber { background: var(--amber-bg); color: #9a6f2a; }
+.badge-red   { background: var(--red-bg);   color: var(--red); }
+.badge-blue  { background: var(--blue-bg);  color: #2a6594; }
+.badge-navy  { background: rgba(13,32,48,.08); color: var(--navy); }
+
+/* ── INLINE ALERT ── */
+.inline-alert {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 11px 14px; border-radius: 7px;
+  font-size: 12px; line-height: 1.5;
+}
+.inline-alert.warn  { background: var(--warn-bg);  border: 1px solid #f0c8a0; color: #8a4a10; }
+.inline-alert.info  { background: var(--blue-bg);  border: 1px solid #b0cce8; color: #2a5a8a; }
+.inline-alert.error { background: var(--red-bg);   border: 1px solid #f0b0b0; color: #8a2020; }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <span class="nav-logo">MAHATRACE</span>
+  <a href="#">Home</a>
+  <a href="#">Dashboard</a>
+  <a href="#" class="active">Crop Planning</a>
+  <a href="#">Marketplace</a>
+  <a href="#">About us</a>
+  <div class="nav-spacer"></div>
+  <div class="nav-right">
+    <div style="width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ede7dc" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span style="width:8px;height:8px;background:var(--warn);border-radius:50%;position:absolute;top:5px;right:5px;border:2px solid var(--navy2)"></span>
+    </div>
+    <div class="nav-avatar">RK</div>
+    <div class="nav-user">
+      <span>Ramesh Kumar</span>
+      <span>AGRI-5471</span>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="sb-section">Overview</div>
+    <a href="#" class="sb-item">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+    <a href="#" class="sb-item">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      My Farm
+    </a>
+    <div class="sb-section">Crop Management</div>
+    <a href="#" class="sb-item active">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 0 0 20"/><path d="M12 2a10 10 0 0 1 0 20"/><path d="M2 12h20"/><path d="M12 2v20"/></svg>
+      Crop Planning
+    </a>
+    <a href="#" class="sb-item">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      Seed Information
+    </a>
+    <a href="#" class="sb-item">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Crop Monitoring
+      <span class="sb-badge">2</span>
+    </a>
+    <div class="sb-section">Harvest & Dispatch</div>
+    <a href="#" class="sb-item">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      Dispatch Linkage
+      <span class="sb-badge">3</span>
+    </a>
+    <a href="#" class="sb-item">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Invoices
+    </a>
+    <div class="sb-section">Support</div>
+    <a href="#" class="sb-item">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Advisories
+    </a>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- BREADCRUMB -->
+    <div class="breadcrumb">
+      <a href="#">Dashboard</a><span>›</span>
+      <a href="#">Crop Planning</a><span>›</span>
+      <span style="color:var(--text)">Add Practice (Package of Practices)</span>
+    </div>
+
+    <!-- PAGE HEADER -->
+    <div class="step-header">
+      <div class="step-header-left">
+        <h1>Add Practice to Package of Practices</h1>
+        <p>Plot A — Rice (Swarna MTU7029)  ·  Kharif 2024  ·  All fields marked <span style="color:var(--red)">*</span> are required for compliance</p>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn-ghost">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          Back to POP
+        </button>
+      </div>
+    </div>
+
+    <!-- PROGRESS STEPPER -->
+    <div class="stepper">
+      <div class="step done">
+        <div class="step-circle">✓</div>
+        <div class="step-label">Plot & Season</div>
+      </div>
+      <div class="step active">
+        <div class="step-circle">2</div>
+        <div class="step-label">Practice Details</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">3</div>
+        <div class="step-label">Inputs & Cost</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">4</div>
+        <div class="step-label">Schedule & Weather</div>
+      </div>
+      <div class="step">
+        <div class="step-circle">5</div>
+        <div class="step-label">Review & Submit</div>
+      </div>
+    </div>
+
+    <!-- MAIN FORM GRID -->
+    <div class="form-grid">
+
+      <!-- ═══ LEFT PANEL ═══ -->
+      <div class="context-panel">
+
+        <!-- Plot selector -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Select Plot</span>
+            <span class="badge badge-navy">Step 1 of 5</span>
+          </div>
+          <div class="card-body">
+            <div class="plot-option selected">
+              <div class="plot-dot" style="background:var(--amber)"></div>
+              <div class="plot-option-info">
+                <div class="plot-option-name">Plot A — Rice</div>
+                <div class="plot-option-sub">Swarna MTU7029 · 1.8 ha · Tillering</div>
+              </div>
+              <div class="plot-radio"><div></div></div>
+            </div>
+            <div class="plot-option">
+              <div class="plot-dot" style="background:var(--green)"></div>
+              <div class="plot-option-info">
+                <div class="plot-option-name">Plot B — Soybean</div>
+                <div class="plot-option-sub">JS 9305 · 1.4 ha · Pod Filling</div>
+              </div>
+              <div class="plot-radio"></div>
+            </div>
+            <div class="plot-option">
+              <div class="plot-dot" style="background:var(--blue)"></div>
+              <div class="plot-option-info">
+                <div class="plot-option-name">Plot C — Cotton</div>
+                <div class="plot-option-sub">Bunny Bt-II · 1.0 ha · Boll Opening</div>
+              </div>
+              <div class="plot-radio"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Season context -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Season Context</span>
+          </div>
+          <div class="card-body" style="padding-top:12px;padding-bottom:12px">
+            <div class="context-row">
+              <span class="context-key">Season</span>
+              <span class="context-value">Kharif 2024</span>
+            </div>
+            <div class="context-row">
+              <span class="context-key">Sowing Date</span>
+              <span class="context-value">Jun 12, 2024</span>
+            </div>
+            <div class="context-row">
+              <span class="context-key">Days After Sowing</span>
+              <span class="context-value" style="color:var(--amber)">132 DAT</span>
+            </div>
+            <div class="context-row">
+              <span class="context-key">Current Stage</span>
+              <span class="context-value">Tillering</span>
+            </div>
+            <div class="context-row">
+              <span class="context-key">Est. Harvest</span>
+              <span class="context-value">Nov 10, 2024</span>
+            </div>
+            <div class="context-row">
+              <span class="context-key">Agristack ID</span>
+              <span class="context-value">AGRI-5471</span>
+            </div>
+            <div style="margin-top:12px">
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:5px">
+                <span>Season progress</span><span style="font-weight:600;color:var(--text)">72%</span>
+              </div>
+              <div style="background:var(--light);border-radius:99px;height:6px;overflow:hidden">
+                <div style="width:72%;height:100%;border-radius:99px;background:var(--green)"></div>
+              </div>
+              <div class="stage-track">
+                <div class="stage-seg" style="background:var(--green)"></div>
+                <div class="stage-seg" style="background:var(--green)"></div>
+                <div class="stage-seg" style="background:var(--green)"></div>
+                <div class="stage-seg" style="background:var(--amber)"></div>
+                <div class="stage-seg" style="background:var(--light);border:1px solid var(--border)"></div>
+                <div class="stage-seg" style="background:var(--light);border:1px solid var(--border)"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--muted);margin-top:3px">
+                <span>Nursery</span><span>Tillering</span><span>Harvest</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Existing POP summary -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Existing Practices</span>
+            <span style="font-size:11px;color:var(--muted)">6 of 11 done</span>
+          </div>
+          <div class="card-body" style="padding-top:10px;padding-bottom:10px">
+            <div class="pop-mini-row">
+              <div class="pop-check done">✓</div>
+              <span class="pop-mini-name">Land Preparation</span>
+              <span class="pop-mini-stage" style="background:rgba(61,90,114,.1);color:#3d5a72">Land Prep</span>
+            </div>
+            <div class="pop-mini-row">
+              <div class="pop-check done">✓</div>
+              <span class="pop-mini-name">Nursery Sowing</span>
+              <span class="pop-mini-stage" style="background:var(--green-bg);color:var(--green2)">Nursery</span>
+            </div>
+            <div class="pop-mini-row">
+              <div class="pop-check done">✓</div>
+              <span class="pop-mini-name">Basal Fertiliser — DAP</span>
+              <span class="pop-mini-stage" style="background:var(--green-bg);color:var(--green2)">Nutrition</span>
+            </div>
+            <div class="pop-mini-row">
+              <div class="pop-check done">✓</div>
+              <span class="pop-mini-name">1st Top Dressing — Urea</span>
+              <span class="pop-mini-stage" style="background:var(--green-bg);color:var(--green2)">Nutrition</span>
+            </div>
+            <div class="pop-mini-row">
+              <div class="pop-check overdue">!</div>
+              <span class="pop-mini-name" style="color:var(--red)">2nd Top Dressing</span>
+              <span class="pop-mini-stage" style="background:var(--red-bg);color:var(--red)">Overdue</span>
+            </div>
+            <div class="pop-mini-row">
+              <div class="pop-check overdue">!</div>
+              <span class="pop-mini-name" style="color:var(--red)">Fungicide — Tricyclazole</span>
+              <span class="pop-mini-stage" style="background:var(--red-bg);color:var(--red)">Overdue</span>
+            </div>
+            <div class="pop-mini-row">
+              <div class="pop-check plan">–</div>
+              <span class="pop-mini-name">Irrigation — Panicle</span>
+              <span class="pop-mini-stage" style="background:var(--amber-bg);color:var(--amber)">Upcoming</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end left panel -->
+
+      <!-- ═══ RIGHT PANEL ═══ -->
+      <div class="right-panel">
+
+        <!-- SECTION 1: Activity Type -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <div class="form-section-num">1</div>
+            <div>
+              <div class="form-section-title">Activity Type</div>
+            </div>
+            <span class="form-section-sub">Select the type of practice you're recording</span>
+          </div>
+          <div class="form-section-body">
+            <div class="type-grid">
+              <div class="type-tile">
+                <span class="type-tile-icon">🌿</span>
+                <div class="type-tile-label">Fertilisation</div>
+              </div>
+              <div class="type-tile selected">
+                <span class="type-tile-icon">🧪</span>
+                <div class="type-tile-label">Pest Control</div>
+              </div>
+              <div class="type-tile">
+                <span class="type-tile-icon">🌿</span>
+                <div class="type-tile-label">Weed Control</div>
+              </div>
+              <div class="type-tile">
+                <span class="type-tile-icon">💧</span>
+                <div class="type-tile-label">Irrigation</div>
+              </div>
+              <div class="type-tile">
+                <span class="type-tile-icon">🚜</span>
+                <div class="type-tile-label">Land Prep</div>
+              </div>
+              <div class="type-tile">
+                <span class="type-tile-icon">🌱</span>
+                <div class="type-tile-label">Sowing / Nursery</div>
+              </div>
+              <div class="type-tile">
+                <span class="type-tile-icon">✂️</span>
+                <div class="type-tile-label">Pruning / Thinning</div>
+              </div>
+              <div class="type-tile">
+                <span class="type-tile-icon">🌾</span>
+                <div class="type-tile-label">Harvest</div>
+              </div>
+              <div class="type-tile">
+                <span class="type-tile-icon">🔍</span>
+                <div class="type-tile-label">Scouting / Inspection</div>
+              </div>
+              <div class="type-tile">
+                <span class="type-tile-icon">📋</span>
+                <div class="type-tile-label">Other</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: Practice Details -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <div class="form-section-num">2</div>
+            <div>
+              <div class="form-section-title">Practice Details</div>
+            </div>
+            <span class="form-section-sub">Describe the activity and timing</span>
+          </div>
+          <div class="form-section-body">
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Activity Name <span class="req">*</span></label>
+                <input class="form-input filled" type="text" value="Fungicide Spray — Tricyclazole 75% WP" />
+                <span class="form-hint">Give a clear, descriptive name for this practice</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Growth Stage at Application <span class="req">*</span></label>
+                <select class="form-select filled">
+                  <option>Select growth stage...</option>
+                  <option>Land Preparation</option>
+                  <option>Nursery / Pre-germination</option>
+                  <option>Transplanting</option>
+                  <option>Vegetative (early)</option>
+                  <option>Tillering</option>
+                  <option selected>Panicle Initiation</option>
+                  <option>Booting</option>
+                  <option>Heading / Flowering</option>
+                  <option>Grain Filling</option>
+                  <option>Maturity / Pre-harvest</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Description / Instructions <span class="req">*</span></label>
+              <textarea class="form-input filled">Preventive spray for rice blast disease. Apply Tricyclazole 75% WP at 500 g/ha. Ensure uniform coverage on leaf surface. Spray in early morning or late evening for best efficacy.</textarea>
+              <span class="form-hint">Include specific instructions a field worker would need to carry out this activity correctly.</span>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Recommended Window — Start <span class="req">*</span></label>
+                <input class="form-input filled" type="date" value="2024-09-10" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Recommended Window — End <span class="req">*</span></label>
+                <input class="form-input filled" type="date" value="2024-09-25" />
+                <span class="form-hint warn">⚠ This window has already passed. Update dates or log as overdue.</span>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Days After Transplanting (DAT) <span class="tip">optional</span></label>
+                <input class="form-input" type="number" placeholder="e.g. 70" value="72" />
+                <span class="form-hint">Leave blank if using calendar dates</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Priority Level</label>
+                <select class="form-select filled">
+                  <option>Low — advisory only</option>
+                  <option selected>High — compliance required</option>
+                  <option>Critical — immediate action</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Stage selector -->
+            <div class="form-group">
+              <label class="form-label">Link to Crop Stage</label>
+              <div class="stage-grid">
+                <div class="stage-option">
+                  <div class="stage-dot"></div>Land Preparation
+                </div>
+                <div class="stage-option">
+                  <div class="stage-dot"></div>Nursery
+                </div>
+                <div class="stage-option">
+                  <div class="stage-dot"></div>Transplanting
+                </div>
+                <div class="stage-option">
+                  <div class="stage-dot"></div>Vegetative
+                </div>
+                <div class="stage-option selected">
+                  <div class="stage-dot"></div>Panicle Init.
+                </div>
+                <div class="stage-option">
+                  <div class="stage-dot"></div>Harvest
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SECTION 3: Inputs & Products -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <div class="form-section-num">3</div>
+            <div>
+              <div class="form-section-title">Inputs & Products Used</div>
+            </div>
+            <span class="form-section-sub">Add all products applied during this practice</span>
+          </div>
+          <div class="form-section-body">
+
+            <!-- Product row 1 -->
+            <div class="product-row">
+              <div class="product-row-num">Product 1</div>
+              <div class="form-group">
+                <label class="form-label">Product Name <span class="req">*</span></label>
+                <input class="form-input filled" type="text" value="Tricyclazole 75% WP" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Quantity <span class="req">*</span></label>
+                <input class="form-input filled" type="text" value="0.9" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Unit <span class="req">*</span></label>
+                <select class="form-select filled">
+                  <option>L</option>
+                  <option selected>kg</option>
+                  <option>g</option>
+                  <option>bags</option>
+                  <option>ml</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Rate (₹/unit)</label>
+                <input class="form-input filled" type="text" value="680" />
+              </div>
+              <button class="btn-remove">×</button>
+            </div>
+
+            <!-- Product row 2 -->
+            <div class="product-row">
+              <div class="product-row-num">Product 2</div>
+              <div class="form-group">
+                <label class="form-label">Product Name <span class="req">*</span></label>
+                <input class="form-input" type="text" placeholder="e.g. Neem oil (sticker)" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Quantity <span class="req">*</span></label>
+                <input class="form-input" type="text" placeholder="0.0" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Unit <span class="req">*</span></label>
+                <select class="form-select">
+                  <option selected>L</option>
+                  <option>kg</option>
+                  <option>g</option>
+                  <option>bags</option>
+                  <option>ml</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Rate (₹/unit)</label>
+                <input class="form-input" type="text" placeholder="₹0" />
+              </div>
+              <button class="btn-remove">×</button>
+            </div>
+
+            <button class="btn-add-product">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add another product / input
+            </button>
+
+            <!-- Cost calculation -->
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              <div class="calc-cost">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                Estimated cost: <strong>₹612</strong>
+                <span>(0.9 kg × ₹680)</span>
+              </div>
+              <div class="form-group" style="flex:1;min-width:180px">
+                <label class="form-label">Supplier <span class="tip">optional</span></label>
+                <select class="form-select">
+                  <option>Select supplier...</option>
+                  <option selected>Nath Agrochem</option>
+                  <option>Agri Seeds Ltd</option>
+                  <option>State Farm Corp</option>
+                  <option>Other / Unknown</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Application Method <span class="req">*</span></label>
+                <select class="form-select filled">
+                  <option>Knapsack sprayer</option>
+                  <option selected>Power sprayer</option>
+                  <option>Tractor-mounted sprayer</option>
+                  <option>Drip irrigation</option>
+                  <option>Broadcasting</option>
+                  <option>Seed treatment</option>
+                  <option>Manual (hand)</option>
+                  <option>Drone spray</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Application Rate (per ha) <span class="tip">auto-filled</span></label>
+                <input class="form-input filled" type="text" value="500 g/ha" disabled />
+                <span class="form-hint">Based on plot area (1.8 ha) × quantity entered</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SECTION 4: Schedule & Field Conditions -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <div class="form-section-num">4</div>
+            <div>
+              <div class="form-section-title">Schedule & Field Conditions</div>
+            </div>
+            <span class="form-section-sub">When and under what conditions was this practice carried out</span>
+          </div>
+          <div class="form-section-body">
+
+            <div class="inline-alert warn">
+              <span>⚠️</span>
+              <div><strong>Heavy rain forecast Apr 24 (58 mm).</strong> Consider delaying spray to Apr 26–27 for optimal efficacy. Spraying before heavy rain will wash off the product.</div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Date of Application <span class="req">*</span></label>
+                <input class="form-input filled" type="date" value="2024-10-22" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Time of Day</label>
+                <select class="form-select filled">
+                  <option>Early morning (before 8 AM)</option>
+                  <option selected>Morning (8–11 AM)</option>
+                  <option>Afternoon (11 AM–4 PM)</option>
+                  <option>Evening (after 4 PM)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Weather conditions -->
+            <div class="form-group">
+              <label class="form-label">Weather Conditions at Time of Application</label>
+              <div class="weather-bar">
+                <div class="weather-tile selected">
+                  <span class="weather-tile-icon">☀️</span>
+                  <div class="weather-tile-label">Clear Sky</div>
+                  <div class="weather-tile-temp">30–33°C</div>
+                </div>
+                <div class="weather-tile">
+                  <span class="weather-tile-icon">⛅</span>
+                  <div class="weather-tile-label">Partly Cloudy</div>
+                  <div class="weather-tile-temp">26–30°C</div>
+                </div>
+                <div class="weather-tile">
+                  <span class="weather-tile-icon">🌧️</span>
+                  <div class="weather-tile-label">Overcast / Rain</div>
+                  <div class="weather-tile-temp">22–26°C</div>
+                </div>
+                <div class="weather-tile">
+                  <span class="weather-tile-icon">💨</span>
+                  <div class="weather-tile-label">Windy</div>
+                  <div class="weather-tile-temp">> 15 km/h wind</div>
+                </div>
+              </div>
+              <span class="form-hint">Avoid spraying in rain or high winds — reduces efficacy and increases drift risk</span>
+            </div>
+
+            <!-- Field conditions chips -->
+            <div class="form-group">
+              <label class="form-label">Additional Field Conditions</label>
+              <div class="chip-wrap">
+                <span class="chip selected">Standing water present</span>
+                <span class="chip">Dry field</span>
+                <span class="chip selected">Uniform crop stand</span>
+                <span class="chip">Patchy crop</span>
+                <span class="chip">Pest visible</span>
+                <span class="chip">Disease symptoms visible</span>
+                <span class="chip">Post-irrigation</span>
+                <span class="chip">Pre-irrigation</span>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Responsible Person</label>
+                <input class="form-input filled" type="text" value="Ramesh Kumar (self)" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Labour Used (persons)</label>
+                <input class="form-input" type="number" placeholder="e.g. 2" value="2" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Field Observations / Notes</label>
+              <textarea class="form-input" style="min-height:72px" placeholder="e.g. Spotted early blast lesions on 3 hills in north corner of plot. Applied spray with extra focus on that area..."></textarea>
+              <span class="form-hint">Observations logged here are visible to your FPO and inspector during compliance review</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SECTION 5: Compliance & Attachments -->
+        <div class="form-section">
+          <div class="form-section-header">
+            <div class="form-section-num">5</div>
+            <div>
+              <div class="form-section-title">Compliance & Attachments</div>
+            </div>
+            <span class="form-section-sub">Upload evidence and confirm compliance requirements</span>
+          </div>
+          <div class="form-section-body">
+
+            <div class="compliance-list">
+              <div class="compliance-item ok">
+                <span class="comp-icon">✅</span>
+                <div>
+                  <div class="comp-title">Product is on approved pesticide list</div>
+                  <div class="comp-desc">Tricyclazole 75% WP is registered under CIB&RC for rice blast control</div>
+                </div>
+              </div>
+              <div class="compliance-item ok">
+                <span class="comp-icon">✅</span>
+                <div>
+                  <div class="comp-title">Application within pre-harvest interval (PHI)</div>
+                  <div class="comp-desc">Harvest est. Nov 10 — 49 days remaining. PHI for Tricyclazole is 21 days. ✓ Safe</div>
+                </div>
+              </div>
+              <div class="compliance-item required">
+                <span class="comp-icon">⚠️</span>
+                <div>
+                  <div class="comp-title">Activity window has passed — logging as overdue</div>
+                  <div class="comp-desc">Recommended window was Sep 10–25. This entry will be flagged as overdue in your compliance report.</div>
+                </div>
+              </div>
+              <div class="compliance-item">
+                <span class="comp-icon">📋</span>
+                <div>
+                  <div class="comp-title">FPO advisory reference number <span class="badge badge-navy" style="margin-left:8px;font-size:9.5px">Optional</span></div>
+                  <div class="comp-desc" style="margin-top:6px">
+                    <input class="form-input" type="text" placeholder="e.g. FPO-2024-ADV-0042" style="max-width:260px;font-size:12px;padding:6px 10px" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Photo upload -->
+            <div class="section-divider"><span>Photo Evidence</span></div>
+
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+              <!-- Uploaded photo -->
+              <div style="border:1.5px solid var(--green);border-radius:8px;overflow:hidden;position:relative">
+                <div style="height:80px;background:linear-gradient(135deg,#c8e0b0,#a8c890);display:flex;align-items:center;justify-content:center;font-size:28px">🌾</div>
+                <div style="padding:6px 8px;background:var(--green-bg)">
+                  <div style="font-size:10px;font-weight:600;color:var(--green2)">field_photo_1.jpg</div>
+                  <div style="font-size:9.5px;color:var(--muted)">Oct 22 · 1.4 MB</div>
+                </div>
+              </div>
+              <!-- Upload slots -->
+              <div style="border:1.5px dashed var(--border);border-radius:8px;height:112px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;background:var(--light)">
+                <span style="font-size:22px;color:var(--muted)">+</span>
+                <span style="font-size:10.5px;color:var(--muted);font-weight:500">Add photo</span>
+              </div>
+              <div style="border:1.5px dashed var(--border);border-radius:8px;height:112px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;background:var(--light)">
+                <span style="font-size:22px;color:var(--muted)">+</span>
+                <span style="font-size:10.5px;color:var(--muted);font-weight:500">Add photo</span>
+              </div>
+              <div style="border:1.5px dashed var(--border);border-radius:8px;height:112px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;background:var(--light)">
+                <span style="font-size:22px;color:var(--muted)">+</span>
+                <span style="font-size:10.5px;color:var(--muted);font-weight:500">Purchase bill</span>
+              </div>
+            </div>
+            <span class="form-hint">Upload field photos, product labels, or purchase bills. Max 5 MB per file. Supported: JPG, PNG, PDF</span>
+
+          </div>
+        </div>
+
+        <!-- ACTION BAR -->
+        <div class="action-bar">
+          <div class="action-bar-left">
+            <div style="font-size:12px;color:var(--muted)">
+              <span style="color:var(--text);font-weight:600">Plot A — Rice</span>  ·  Pest Control  ·  Tricyclazole 75% WP  ·  0.9 kg  ·  ₹612
+            </div>
+          </div>
+          <div class="action-bar-right">
+            <button class="btn-ghost">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Save as Draft
+            </button>
+            <button class="btn-secondary">
+              Preview Entry
+            </button>
+            <button class="btn-primary large">
+              Submit Practice
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+
+      </div><!-- end right panel -->
+
+    </div><!-- end form-grid -->
+  </main>
+</div>
+</body>
+</html>
