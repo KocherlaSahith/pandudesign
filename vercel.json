@@ -3,20 +3,20 @@
   "name": "awd-landing",
   "builds": [
     {
-      "src": "add-practice.html",
+      "src": "seed-information.html",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/add-practice.html"
+      "dest": "/seed-information.html"
     }
   ],
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/add-practice.html"
+      "destination": "/seed-information.html"
     }
   ],
   "headers": [

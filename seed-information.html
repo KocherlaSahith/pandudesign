@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=1280"/>
+<title>Mahatrace – Seed Information</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --navy:    #0d2030;
+  --navy2:   #0a1a27;
+  --green:   #6aab4c;
+  --green2:  #4e8e34;
+  --green-bg:#edf5e9;
+  --amber:   #c79548;
+  --amber-bg:#fdf3e3;
+  --bg:      #e7ebe1;
+  --card:    #ffffff;
+  --muted:   #888998;
+  --text:    #10181f;
+  --light:   #f4f6f0;
+  --border:  #d6dbd0;
+  --warn:    #e07b3c;
+  --warn-bg: #fef0e7;
+  --red:     #d64040;
+  --red-bg:  #fdeaea;
+  --blue:    #4a8fcc;
+  --blue-bg: #e8f2fa;
+  --purple:  #7c5cbf;
+  --purple-bg:#f0eaf8;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ── NAV ── */
+nav{background:var(--navy);height:64px;display:flex;align-items:center;padding:0 40px;gap:36px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.28);}
+.nav-logo{background:var(--green);color:white;font-family:'DM Serif Display',serif;font-size:17px;padding:6px 14px;border-radius:4px;margin-right:10px;letter-spacing:.4px;white-space:nowrap;}
+nav a{color:#ede7dc;text-decoration:none;font-size:13.5px;font-weight:500;opacity:.75;}
+nav a.active{opacity:1;color:#fff;border-bottom:2px solid var(--green);padding-bottom:2px;}
+.nav-spacer{flex:1;}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-avatar{width:32px;height:32px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:12px;}
+.nav-user{display:flex;flex-direction:column;}
+.nav-user span:first-child{font-size:13px;font-weight:600;color:#fff;}
+.nav-user span:last-child{font-size:10.5px;color:var(--muted);}
+
+/* ── LAYOUT ── */
+.page{display:grid;grid-template-columns:224px 1fr;min-height:calc(100vh - 64px);}
+
+/* ── SIDEBAR ── */
+aside{background:var(--navy2);padding:24px 0;display:flex;flex-direction:column;gap:2px;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;}
+.sb-sec{font-size:9.5px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:rgba(255,255,255,.28);padding:14px 24px 5px;}
+.sb-item{display:flex;align-items:center;gap:11px;padding:9px 24px;color:rgba(255,255,255,.58);font-size:13px;font-weight:500;cursor:pointer;border-left:3px solid transparent;text-decoration:none;}
+.sb-item:hover{background:rgba(255,255,255,.05);color:#fff;}
+.sb-item.active{background:rgba(106,171,76,.13);color:var(--green);border-left-color:var(--green);font-weight:600;}
+.sb-badge{margin-left:auto;background:var(--warn);color:white;font-size:9.5px;font-weight:700;padding:2px 6px;border-radius:10px;}
+
+/* ── MAIN ── */
+main{padding:32px 36px;display:flex;flex-direction:column;gap:22px;}
+
+/* ── BREADCRUMB ── */
+.bc{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);}
+.bc a{color:var(--green);text-decoration:none;font-weight:500;}
+
+/* ── PAGE HEADER ── */
+.page-hdr{display:flex;align-items:flex-end;justify-content:space-between;}
+.page-hdr h1{font-family:'DM Serif Display',serif;font-size:24px;font-weight:400;color:var(--navy);}
+.page-hdr p{font-size:12px;color:var(--muted);margin-top:4px;}
+.btn-row{display:flex;gap:10px;align-items:center;}
+.btn{display:flex;align-items:center;gap:7px;padding:9px 18px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;border:none;transition:all .15s;white-space:nowrap;}
+.btn-outline{background:white;color:var(--navy);border:1.5px solid var(--border);}
+.btn-outline:hover{border-color:var(--navy);}
+.btn-primary{background:var(--green);color:white;}
+.btn-primary:hover{background:var(--green2);}
+
+/* ── SUMMARY BANNER ── */
+.seed-banner{background:linear-gradient(120deg,var(--navy) 0%,#1a3a52 55%,#1e4a34 100%);border-radius:12px;padding:22px 28px;display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;overflow:hidden;}
+.seed-banner::after{content:'🌾';position:absolute;right:28px;top:50%;transform:translateY(-50%);font-size:72px;opacity:.08;}
+.sb-stat{color:white;padding-right:24px;}
+.sb-stat+.sb-stat{padding-left:24px;border-left:1px solid rgba(255,255,255,.1);}
+.sb-stat-lbl{font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:4px;}
+.sb-stat-val{font-family:'DM Serif Display',serif;font-size:26px;color:white;}
+.sb-stat-sub{font-size:11px;color:rgba(255,255,255,.45);margin-top:3px;}
+
+/* ── CARDS ── */
+.card{background:var(--card);border-radius:10px;border:1px solid var(--border);overflow:hidden;}
+.card-hdr{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-size:13.5px;font-weight:600;color:var(--navy);}
+.card-link{font-size:12px;color:var(--green);font-weight:500;cursor:pointer;text-decoration:none;}
+.card-body{padding:20px 22px;}
+
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
+.g3-2{display:grid;grid-template-columns:2fr 1fr;gap:20px;}
+.g2-1{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:10.5px;font-weight:600;}
+.badge-green{background:var(--green-bg);color:var(--green2);}
+.badge-amber{background:var(--amber-bg);color:#9a6f2a;}
+.badge-blue{background:var(--blue-bg);color:#2a6594;}
+.badge-red{background:var(--red-bg);color:#a02020;}
+.badge-grey{background:rgba(136,137,152,.1);color:var(--muted);}
+.badge-purple{background:var(--purple-bg);color:var(--purple);}
+.badge-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+
+/* ── SEED VARIETY CARDS ── */
+.variety-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:20px 22px;}
+.variety-card{border:1.5px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:all .2s;}
+.variety-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08);border-color:var(--green);}
+.variety-card.active-var{border-color:var(--green);box-shadow:0 0 0 3px rgba(106,171,76,.15);}
+.vc-top{padding:16px 18px 14px;display:flex;align-items:flex-start;justify-content:space-between;}
+.vc-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.vc-name{font-size:14px;font-weight:700;color:var(--navy);margin-top:2px;}
+.vc-crop{font-size:11px;color:var(--muted);margin-top:2px;}
+.vc-meta{padding:0 18px 14px;display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.vc-meta-item{}
+.vc-meta-lbl{font-size:10px;color:var(--muted);font-weight:500;}
+.vc-meta-val{font-size:12px;font-weight:600;color:var(--text);margin-top:1px;}
+.vc-footer{padding:10px 18px;border-top:1px solid var(--light);display:flex;align-items:center;justify-content:space-between;}
+
+/* ── TABLE ── */
+table{width:100%;border-collapse:collapse;}
+th{text-align:left;font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;padding:10px 14px;border-bottom:1px solid var(--border);}
+td{padding:13px 14px;font-size:12.5px;border-bottom:1px solid var(--light);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--light);}
+
+/* ── MINI STATS BAR ── */
+.mini-stats{display:flex;border-bottom:1px solid var(--border);}
+.mini-stat{flex:1;padding:14px 20px;border-right:1px solid var(--border);text-align:center;}
+.mini-stat:last-child{border-right:none;}
+.ms-val{font-size:20px;font-weight:700;color:var(--navy);font-family:'DM Serif Display',serif;}
+.ms-lbl{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+
+/* ── DETAIL ROWS ── */
+.detail-row{display:flex;align-items:center;padding:11px 0;border-bottom:1px solid var(--light);}
+.detail-row:last-child{border-bottom:none;}
+.detail-lbl{font-size:11.5px;color:var(--muted);font-weight:500;min-width:180px;}
+.detail-val{font-size:13px;font-weight:600;color:var(--text);}
+.detail-val.highlight{color:var(--green2);}
+.detail-val.warn{color:var(--warn);}
+
+/* ── PROGRESS BAR ── */
+.prog-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.prog-row:last-child{margin-bottom:0;}
+.prog-lbl{font-size:12px;font-weight:500;color:var(--text);min-width:140px;}
+.prog-track{flex:1;height:7px;background:var(--light);border-radius:99px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:99px;background:var(--green);}
+.prog-fill.amber{background:var(--amber);}
+.prog-fill.red{background:var(--red);}
+.prog-pct{font-size:11.5px;font-weight:600;color:var(--muted);min-width:36px;text-align:right;}
+
+/* ── TIMELINE ── */
+.timeline{position:relative;padding-left:22px;}
+.timeline::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:2px;background:var(--border);}
+.tl-item{position:relative;margin-bottom:20px;}
+.tl-item:last-child{margin-bottom:0;}
+.tl-dot{position:absolute;left:-22px;top:2px;width:14px;height:14px;border-radius:50%;border:2px solid white;z-index:1;}
+.tl-title{font-size:12.5px;font-weight:600;color:var(--text);}
+.tl-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+.tl-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;margin-top:5px;}
+
+/* ── INFO BOX ── */
+.info-box{padding:12px 16px;border-radius:8px;font-size:12.5px;line-height:1.6;display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;}
+.info-box:last-child{margin-bottom:0;}
+.info-box.blue{background:var(--blue-bg);border-left:3px solid var(--blue);color:#1e4a7a;}
+.info-box.green{background:var(--green-bg);border-left:3px solid var(--green);color:#2a5a1e;}
+.info-box.warn{background:var(--warn-bg);border-left:3px solid var(--warn);color:#7a3a10;}
+.info-box.amber{background:var(--amber-bg);border-left:3px solid var(--amber);color:#7a4a10;}
+.ib-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+.ib-title{font-weight:700;margin-bottom:2px;}
+
+/* ── SUPPLIER CARD ── */
+.supplier-row{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--light);}
+.supplier-row:last-child{border-bottom:none;}
+.sup-logo{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:white;flex-shrink:0;}
+.sup-name{font-size:13px;font-weight:600;color:var(--navy);}
+.sup-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+.sup-rating{font-size:12px;color:var(--amber);font-weight:600;}
+.sup-tag{font-size:10.5px;color:var(--muted);}
+
+/* ── LOT CARD ── */
+.lot-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--light);}
+.lot-row:last-child{border-bottom:none;}
+.lot-icon{width:36px;height:36px;border-radius:8px;background:var(--light);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.lot-id{font-size:12px;font-weight:600;color:var(--navy);}
+.lot-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.lot-right{margin-left:auto;text-align:right;}
+.lot-qty{font-size:13px;font-weight:600;color:var(--text);}
+
+/* ── TABS ── */
+.tabs{display:flex;border-bottom:1px solid var(--border);padding:0 22px;}
+.tab{padding:12px 18px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;margin-bottom:-1px;white-space:nowrap;}
+.tab.active{color:var(--navy);border-bottom-color:var(--green);font-weight:600;}
+
+/* ── CERT / DOCUMENT ROW ── */
+.doc-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--light);}
+.doc-row:last-child{border-bottom:none;}
+.doc-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.doc-name{font-size:12.5px;font-weight:600;color:var(--navy);}
+.doc-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+.doc-status{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+
+/* ── PERFORMANCE CHART ── */
+.perf-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.perf-bar-row:last-child{margin-bottom:0;}
+.perf-bar-lbl{font-size:12px;font-weight:500;color:var(--text);min-width:130px;}
+.perf-bar-track{flex:1;height:22px;background:var(--light);border-radius:5px;overflow:hidden;position:relative;}
+.perf-bar-fill{height:100%;border-radius:5px;display:flex;align-items:center;padding-left:10px;}
+.perf-bar-val{font-size:11px;font-weight:700;color:white;}
+
+/* ── COMPARISON TABLE ── */
+.comp-table{width:100%;border-collapse:collapse;}
+.comp-table th{text-align:left;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;padding:8px 12px;border-bottom:1px solid var(--border);background:var(--light);}
+.comp-table th.highlight-col{background:var(--green-bg);color:var(--green2);}
+.comp-table td{padding:11px 12px;font-size:12px;border-bottom:1px solid var(--light);vertical-align:middle;}
+.comp-table tr:last-child td{border-bottom:none;}
+.comp-table td.highlight-col{background:rgba(106,171,76,.05);font-weight:600;color:var(--green2);}
+.comp-table .row-lbl{font-weight:600;color:var(--navy);}
+.check-cell{color:var(--green2);font-weight:700;font-size:14px;}
+.cross-cell{color:var(--red);font-size:14px;}
+
+/* ── CHIP ── */
+.chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+.chip{padding:4px 12px;border-radius:20px;font-size:11.5px;font-weight:500;background:var(--light);border:1px solid var(--border);color:var(--text);}
+.chip.sel{background:var(--green-bg);border-color:var(--green);color:var(--green2);font-weight:600;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo">MAHATRACE</span>
+  <a href="#">Home</a>
+  <a href="#">Dashboard</a>
+  <a href="#">Crop Planning</a>
+  <a href="#" class="active">Seed Information</a>
+  <a href="#">Marketplace</a>
+  <a href="#">About us</a>
+  <div class="nav-spacer"></div>
+  <div class="nav-right">
+    <div class="nav-avatar">RK</div>
+    <div class="nav-user"><span>Ramesh Kumar</span><span>AGRI-5471</span></div>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="sb-sec">Overview</div>
+    <a class="sb-item" href="#">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+    <a class="sb-item" href="#">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      My Farm
+    </a>
+    <div class="sb-sec">Crop Management</div>
+    <a class="sb-item" href="#">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 0 0 20"/><path d="M12 2a10 10 0 0 1 0 20"/><path d="M2 12h20"/><path d="M12 2v20"/></svg>
+      Crop Planning
+    </a>
+    <a class="sb-item active" href="#">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      Seed Information
+    </a>
+    <a class="sb-item" href="#">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Crop Monitoring
+      <span class="sb-badge">2</span>
+    </a>
+    <div class="sb-sec">Harvest & Dispatch</div>
+    <a class="sb-item" href="#">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      Dispatch Linkage
+      <span class="sb-badge">3</span>
+    </a>
+    <a class="sb-item" href="#">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Invoices
+    </a>
+    <a class="sb-item" href="#">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      Track Movement
+    </a>
+    <div class="sb-sec">Support</div>
+    <a class="sb-item" href="#">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/></svg>
+      Advisories
+    </a>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- BREADCRUMB + HEADER -->
+    <div>
+      <div class="bc" style="margin-bottom:10px">
+        <a href="#">Dashboard</a><span>›</span>
+        <a href="#">Crop Planning</a><span>›</span>
+        <span style="color:var(--text)">Seed Information</span>
+      </div>
+      <div class="page-hdr">
+        <div>
+          <h1>Seed Information</h1>
+          <p>Kharif Season 2024  ·  Pune District, Maharashtra  ·  3 varieties registered across 3 plots</p>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-outline">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export Report
+          </button>
+          <button class="btn btn-primary">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Seed Variety
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUMMARY BANNER -->
+    <div class="seed-banner">
+      <div class="sb-stat">
+        <div class="sb-stat-lbl">Season</div>
+        <div class="sb-stat-val">Kharif 2024</div>
+        <div class="sb-stat-sub">Jun 1 – Nov 30, 2024</div>
+      </div>
+      <div class="sb-stat">
+        <div class="sb-stat-lbl">Varieties Registered</div>
+        <div class="sb-stat-val">3</div>
+        <div class="sb-stat-sub">Rice · Soybean · Cotton</div>
+      </div>
+      <div class="sb-stat">
+        <div class="sb-stat-lbl">Total Seed Cost</div>
+        <div class="sb-stat-val">₹6,200</div>
+        <div class="sb-stat-sub">Across 4.2 ha farm area</div>
+      </div>
+      <div class="sb-stat">
+        <div class="sb-stat-lbl">Certification Status</div>
+        <div class="sb-stat-val" style="color:#7ed660">2 / 3</div>
+        <div class="sb-stat-sub">Certified · 1 pending verification</div>
+      </div>
+    </div>
+
+    <!-- SEED VARIETY CARDS -->
+    <div class="card">
+      <div class="card-hdr">
+        <span class="card-title">Registered Seed Varieties</span>
+        <div style="display:flex;gap:12px;align-items:center">
+          <span style="font-size:11.5px;color:var(--muted)">Click a variety to view full details</span>
+          <a class="card-link">+ Add Variety</a>
+        </div>
+      </div>
+      <div class="variety-grid">
+
+        <!-- RICE -->
+        <div class="variety-card active-var">
+          <div class="vc-top">
+            <div>
+              <div class="vc-icon" style="background:rgba(106,171,76,.15);margin-bottom:10px">🌾</div>
+              <div class="vc-name">Swarna MTU7029</div>
+              <div class="vc-crop">Rice · Plot A · 1.8 ha</div>
+            </div>
+            <span class="badge badge-green"><span class="badge-dot" style="background:var(--green2)"></span>Certified</span>
+          </div>
+          <div class="vc-meta">
+            <div class="vc-meta-item"><div class="vc-meta-lbl">Category</div><div class="vc-meta-val">High Yielding</div></div>
+            <div class="vc-meta-item"><div class="vc-meta-lbl">Duration</div><div class="vc-meta-val">145 days</div></div>
+            <div class="vc-meta-item"><div class="vc-meta-lbl">Seed Rate</div><div class="vc-meta-val">25 kg/ha</div></div>
+            <div class="vc-meta-item"><div class="vc-meta-lbl">Qty Purchased</div><div class="vc-meta-val">45 kg</div></div>
+            <div class="vc-meta-item"><div class="vc-meta-lbl">Cost</div><div class="vc-meta-val">₹2,250</div></div>
+            <div class="vc-meta-item"><div class="vc-meta-lbl">Supplier</div><div class="vc-meta-val">Agri Seeds Ltd</div></div>
+          </div>
+          <div class="vc-footer">
+            <span style="font-size:11px;color:var(--muted)">Sown Jun 12, 2024</span>
+            <span class="badge badge-amber">Monitoring</span>
+          </div>
+        </div>
+
+        <!-- SOYBEAN -->
+        <div class="variety-card">
+          <div class="vc-top">
+            <div>
+              <div class="vc-icon" style="background:rgba(74,143,204,.12);margin-bottom:10px">🫘</div>
+              <div class="vc-name">JS 9305</div>
+              <div class="vc-crop">Soybean · Plot B · 1.4 ha</div>
+            </div>
+            <span class="badge badge-green"><span class="badge-dot" style="background:var(--green2)"></span>Certified</span>
+          </div>
+          <div class="vc-meta">
+            <div class="vc-meta-item"><div class="vc-meta-lbl">Category</div><div class="vc-meta-val">Medium Duration</div></div>
+            <div class="vc-meta-item"><div class="vc-meta-lbl">Duration</div><div class="vc-meta-val">100 days</div></div>
+            <div class="vc-meta-item"><div class="vc-meta-lbl">Seed Rate</div><div class="vc-meta-val">70 kg/ha</div></div>
+            <div class="vc-meta-item"><div class="vc-meta-lbl">Qty Purchased</div><div class="vc-meta-val">98 kg</div></div>
+            <div class="vc-meta-item"><div class="vc-meta-lbl">Cost</div><div class="vc-meta-val">₹2,450</div></div>
+            <div class="vc-meta-item"><div class="vc-meta-lbl">Supplier</div><div class="vc-meta-val">State Farm Corp</div></div>
+          </div>
+          <div class="vc-footer">
+            <span style="font-size:11px;color:var(--muted)">Sown Jun 28, 2024</span>
+            <span class="badge badge-blue">Pre-Harvest</span>
+          </div>
+        </div>
+
+        <!-- COTTON -->
+        <div class="variety-card">
+          <div class="vc-top">
+            <div>
+              <div class="vc-icon" style="background:rgba(199,149,72,.12);margin-bottom:10px">🌿</div>
+              <div class="vc-name">Bunny Bt-II</div>
+              <div class="vc-crop">Cotton · Plot C · 1.0 ha</div>
+            </div>
+            <span class="badge badge-amber"><span class="badge-dot" style="background:var(--amber)"></span>Pending</span>
+          </div>
+          <div class="vc-meta">
+            <div class="vc-meta-item"><div class="vc-meta-lbl">Category</div><div class="vc-meta-val">Bt Hybrid</div></div>
+            <div class="vc-meta-item"><div class="vc-meta-lbl">Duration</div><div class="vc-meta-val">180 days</div></div>
+            <div class="vc-meta-item"><div class="vc-meta-lbl">Seed Rate</div><div class="vc-meta-val">1 packet/ha</div></div>
+            <div class="vc-meta-item"><div class="vc-meta-lbl">Qty Purchased</div><div class="vc-meta-val">1 packet</div></div>
+            <div class="vc-meta-item"><div class="vc-meta-lbl">Cost</div><div class="vc-meta-val">₹1,500</div></div>
+            <div class="vc-meta-item"><div class="vc-meta-lbl">Supplier</div><div class="vc-meta-val">Nath Seeds</div></div>
+          </div>
+          <div class="vc-footer">
+            <span style="font-size:11px;color:var(--muted)">Sown May 18, 2024</span>
+            <span class="badge badge-green">Boll Opening</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SELECTED VARIETY DETAIL + SUPPLIER -->
+    <div class="g3-2">
+
+      <!-- SEED DETAIL — LEFT (wider) -->
+      <div style="display:flex;flex-direction:column;gap:20px">
+
+        <!-- SEED DETAIL CARD -->
+        <div class="card">
+          <div class="card-hdr">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:22px">🌾</span>
+              <div>
+                <div class="card-title">Swarna MTU7029 — Rice</div>
+                <div style="font-size:11px;color:var(--muted);margin-top:2px">Plot A · Survey No. 142 · 1.8 ha · Kharif 2024</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <span class="badge badge-green">✓ Certified Seed</span>
+              <a class="card-link">Edit</a>
+            </div>
+          </div>
+          <div class="tabs">
+            <div class="tab active">Seed Details</div>
+            <div class="tab">Treatment</div>
+            <div class="tab">Nursery & Sowing</div>
+            <div class="tab">Performance</div>
+          </div>
+          <div class="card-body" style="padding-top:16px">
+            <div class="g2" style="gap:0">
+              <div>
+                <div class="detail-row"><span class="detail-lbl">Variety Name</span><span class="detail-val">Swarna (MTU 7029)</span></div>
+                <div class="detail-row"><span class="detail-lbl">Crop Type</span><span class="detail-val">Rice (Oryza sativa)</span></div>
+                <div class="detail-row"><span class="detail-lbl">Category</span><span class="detail-val">High Yielding Variety (HYV)</span></div>
+                <div class="detail-row"><span class="detail-lbl">Seed Class</span><span class="detail-val">Certified Seed (CS)</span></div>
+                <div class="detail-row"><span class="detail-lbl">Maturity Duration</span><span class="detail-val highlight">145 days</span></div>
+                <div class="detail-row"><span class="detail-lbl">Season</span><span class="detail-val">Kharif (Long-duration)</span></div>
+                <div class="detail-row"><span class="detail-lbl">Developed By</span><span class="detail-val">ANGRAU, Hyderabad</span></div>
+              </div>
+              <div style="padding-left:28px;border-left:1px solid var(--border)">
+                <div class="detail-row"><span class="detail-lbl">Seed Rate</span><span class="detail-val">25 kg / ha</span></div>
+                <div class="detail-row"><span class="detail-lbl">Qty Purchased</span><span class="detail-val highlight">45 kg</span></div>
+                <div class="detail-row"><span class="detail-lbl">Qty Used</span><span class="detail-val">45 kg (100%)</span></div>
+                <div class="detail-row"><span class="detail-lbl">Germination Rate</span><span class="detail-val highlight">94%</span></div>
+                <div class="detail-row"><span class="detail-lbl">Seed Cost</span><span class="detail-val">₹50 / kg</span></div>
+                <div class="detail-row"><span class="detail-lbl">Total Seed Cost</span><span class="detail-val highlight">₹2,250</span></div>
+                <div class="detail-row"><span class="detail-lbl">Purchase Date</span><span class="detail-val">Jun 2, 2024</span></div>
+              </div>
+            </div>
+
+            <!-- Key characteristics -->
+            <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--border)">
+              <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;">Agronomic Characteristics</div>
+              <div class="g2">
+                <div>
+                  <div class="detail-row"><span class="detail-lbl">Plant Height</span><span class="detail-val">80–100 cm</span></div>
+                  <div class="detail-row"><span class="detail-lbl">Tillering Capacity</span><span class="detail-val">High (20–25 tillers)</span></div>
+                  <div class="detail-row"><span class="detail-lbl">Grain Type</span><span class="detail-val">Medium bold, non-aromatic</span></div>
+                  <div class="detail-row"><span class="detail-lbl">1000-grain Weight</span><span class="detail-val">25–26 g</span></div>
+                </div>
+                <div style="padding-left:28px;border-left:1px solid var(--border)">
+                  <div class="detail-row"><span class="detail-lbl">Potential Yield</span><span class="detail-val highlight">5–6 t / ha</span></div>
+                  <div class="detail-row"><span class="detail-lbl">Milling Recovery</span><span class="detail-val">68–70%</span></div>
+                  <div class="detail-row"><span class="detail-lbl">Lodging Resistance</span><span class="detail-val">Moderate</span></div>
+                  <div class="detail-row"><span class="detail-lbl">Drought Tolerance</span><span class="detail-val warn">Low — irrigate regularly</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Disease resistance -->
+            <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--border)">
+              <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px;">Disease & Pest Resistance</div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px">
+                <span class="badge badge-green">✓ BLB Resistant</span>
+                <span class="badge badge-green">✓ Brown Planthopper</span>
+                <span class="badge badge-amber">⚠ Blast Susceptible</span>
+                <span class="badge badge-amber">⚠ Sheath Blight</span>
+                <span class="badge badge-red">✗ Gall Midge</span>
+                <span class="badge badge-green">✓ Tungro Tolerant</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEED TREATMENT CARD -->
+        <div class="card">
+          <div class="card-hdr">
+            <span class="card-title">Seed Treatment Record</span>
+            <a class="card-link">+ Add treatment</a>
+          </div>
+          <div class="card-body" style="padding:0">
+            <table>
+              <thead>
+                <tr>
+                  <th>Treatment</th>
+                  <th>Product Used</th>
+                  <th>Dosage</th>
+                  <th>Date</th>
+                  <th>Purpose</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong style="color:var(--navy)">Fungicide Dressing</strong><div style="font-size:11px;color:var(--muted)">Pre-sowing treatment</div></td>
+                  <td>Carbendazim 50% WP</td>
+                  <td>2 g / kg seed</td>
+                  <td>Jun 7, 2024</td>
+                  <td><span class="badge badge-purple">Blast / Rot prevention</span></td>
+                  <td><span class="badge badge-green">Done</span></td>
+                </tr>
+                <tr>
+                  <td><strong style="color:var(--navy)">Biopriming</strong><div style="font-size:11px;color:var(--muted)">Trichoderma treatment</div></td>
+                  <td>Trichoderma viride</td>
+                  <td>4 g / kg seed</td>
+                  <td>Jun 7, 2024</td>
+                  <td><span class="badge badge-green">Root health / Damping-off</span></td>
+                  <td><span class="badge badge-green">Done</span></td>
+                </tr>
+                <tr>
+                  <td><strong style="color:var(--navy)">Hydro-priming</strong><div style="font-size:11px;color:var(--muted)">Soaking for germination</div></td>
+                  <td>Clean water (12–16 hrs)</td>
+                  <td>—</td>
+                  <td>Jun 8, 2024</td>
+                  <td><span class="badge badge-blue">Uniform germination</span></td>
+                  <td><span class="badge badge-green">Done</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- NURSERY & SOWING -->
+        <div class="card">
+          <div class="card-hdr">
+            <span class="card-title">Nursery & Sowing Details</span>
+            <span class="badge badge-green">Completed</span>
+          </div>
+          <div class="card-body">
+            <div class="g2">
+              <div>
+                <div class="detail-row"><span class="detail-lbl">Nursery Sowing Date</span><span class="detail-val">Jun 8, 2024</span></div>
+                <div class="detail-row"><span class="detail-lbl">Nursery Area</span><span class="detail-val">180 m² (1/10th of plot)</span></div>
+                <div class="detail-row"><span class="detail-lbl">Seedling Age at Transplanting</span><span class="detail-val">25 days</span></div>
+                <div class="detail-row"><span class="detail-lbl">Transplanting Date</span><span class="detail-val">Jul 1, 2024</span></div>
+                <div class="detail-row"><span class="detail-lbl">Transplanting Spacing</span><span class="detail-val">20 × 15 cm</span></div>
+              </div>
+              <div style="padding-left:24px;border-left:1px solid var(--border)">
+                <div class="detail-row"><span class="detail-lbl">Hills per m²</span><span class="detail-val">33 hills</span></div>
+                <div class="detail-row"><span class="detail-lbl">Seedlings per Hill</span><span class="detail-val">2–3 seedlings</span></div>
+                <div class="detail-row"><span class="detail-lbl">Nursery Germination</span><span class="detail-val highlight">92%</span></div>
+                <div class="detail-row"><span class="detail-lbl">Method</span><span class="detail-val">Wet bed nursery</span></div>
+                <div class="detail-row"><span class="detail-lbl">Seedling Health</span><span class="detail-val highlight">Good</span></div>
+              </div>
+            </div>
+
+            <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
+              <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px;">Germination Progress</div>
+              <div class="prog-row">
+                <span class="prog-lbl">Day 3 — Emergence</span>
+                <div class="prog-track"><div class="prog-fill" style="width:100%"></div></div>
+                <span class="prog-pct">100%</span>
+              </div>
+              <div class="prog-row">
+                <span class="prog-lbl">Day 7 — Seedling</span>
+                <div class="prog-track"><div class="prog-fill" style="width:96%"></div></div>
+                <span class="prog-pct">96%</span>
+              </div>
+              <div class="prog-row">
+                <span class="prog-lbl">Day 14 — Established</span>
+                <div class="prog-track"><div class="prog-fill" style="width:94%"></div></div>
+                <span class="prog-pct">94%</span>
+              </div>
+              <div class="prog-row">
+                <span class="prog-lbl">Day 25 — Ready</span>
+                <div class="prog-track"><div class="prog-fill amber" style="width:92%"></div></div>
+                <span class="prog-pct">92%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VARIETY COMPARISON TABLE -->
+        <div class="card">
+          <div class="card-hdr">
+            <span class="card-title">Variety Comparison — Kharif 2024</span>
+            <a class="card-link">View full comparison</a>
+          </div>
+          <div style="padding:0">
+            <table class="comp-table">
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th class="highlight-col">Swarna MTU7029 ★</th>
+                  <th>JS 9305</th>
+                  <th>Bunny Bt-II</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="row-lbl">Crop</td>
+                  <td class="highlight-col">Rice</td>
+                  <td>Soybean</td>
+                  <td>Cotton</td>
+                </tr>
+                <tr>
+                  <td class="row-lbl">Seed Category</td>
+                  <td class="highlight-col">HYV · Certified</td>
+                  <td>HYV · Certified</td>
+                  <td>Bt Hybrid · Pending</td>
+                </tr>
+                <tr>
+                  <td class="row-lbl">Duration</td>
+                  <td class="highlight-col">145 days</td>
+                  <td>100 days</td>
+                  <td>180 days</td>
+                </tr>
+                <tr>
+                  <td class="row-lbl">Seed Rate</td>
+                  <td class="highlight-col">25 kg/ha</td>
+                  <td>70 kg/ha</td>
+                  <td>1 packet/ha</td>
+                </tr>
+                <tr>
+                  <td class="row-lbl">Germination %</td>
+                  <td class="highlight-col">94%</td>
+                  <td>91%</td>
+                  <td>88%</td>
+                </tr>
+                <tr>
+                  <td class="row-lbl">Yield Potential</td>
+                  <td class="highlight-col">5–6 t/ha</td>
+                  <td>2–2.5 t/ha</td>
+                  <td>20–25 q/ha</td>
+                </tr>
+                <tr>
+                  <td class="row-lbl">Treatment Done</td>
+                  <td class="highlight-col check-cell">✓</td>
+                  <td class="check-cell">✓</td>
+                  <td class="cross-cell">✗</td>
+                </tr>
+                <tr>
+                  <td class="row-lbl">Certification</td>
+                  <td class="highlight-col"><span class="badge badge-green">Certified</span></td>
+                  <td><span class="badge badge-green">Certified</span></td>
+                  <td><span class="badge badge-amber">Pending</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div style="display:flex;flex-direction:column;gap:20px">
+
+        <!-- CERTIFICATION & DOCUMENTS -->
+        <div class="card">
+          <div class="card-hdr">
+            <span class="card-title">Certification & Documents</span>
+            <a class="card-link">+ Upload</a>
+          </div>
+          <div class="card-body" style="padding-top:10px">
+            <div class="doc-row">
+              <div class="doc-icon" style="background:var(--green-bg)">📜</div>
+              <div>
+                <div class="doc-name">Seed Certification Tag</div>
+                <div class="doc-meta">Swarna MTU7029 · Lot No. SC-2024-0081 · ANGRAU</div>
+              </div>
+              <div class="doc-status">
+                <span class="badge badge-green">Verified</span>
+                <span style="font-size:10px;color:var(--muted)">Jun 2, 2024</span>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-icon" style="background:var(--green-bg)">🧾</div>
+              <div>
+                <div class="doc-name">Purchase Invoice</div>
+                <div class="doc-meta">INV-AGL-2406-0044 · Agri Seeds Ltd · ₹2,250</div>
+              </div>
+              <div class="doc-status">
+                <span class="badge badge-green">Uploaded</span>
+                <span style="font-size:10px;color:var(--muted)">Jun 2, 2024</span>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-icon" style="background:var(--blue-bg)">🔬</div>
+              <div>
+                <div class="doc-name">Germination Test Report</div>
+                <div class="doc-meta">Lab test · 94% germination · IARI certified lab</div>
+              </div>
+              <div class="doc-status">
+                <span class="badge badge-green">Verified</span>
+                <span style="font-size:10px;color:var(--muted)">Jun 5, 2024</span>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-icon" style="background:var(--amber-bg)">📋</div>
+              <div>
+                <div class="doc-name">Nursery Observation Log</div>
+                <div class="doc-meta">Daily records from Jun 8–Jul 1 · 25 entries</div>
+              </div>
+              <div class="doc-status">
+                <span class="badge badge-green">Uploaded</span>
+                <span style="font-size:10px;color:var(--muted)">Jul 1, 2024</span>
+              </div>
+            </div>
+            <div class="doc-row">
+              <div class="doc-icon" style="background:var(--red-bg)">⚠️</div>
+              <div>
+                <div class="doc-name">Cotton Bt Tag (Bunny Bt-II)</div>
+                <div class="doc-meta">Mandatory for Bt cotton · Not yet uploaded</div>
+              </div>
+              <div class="doc-status">
+                <span class="badge badge-red">Missing</span>
+                <span style="font-size:10px;color:var(--red)">Upload required</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEED SUPPLIERS -->
+        <div class="card">
+          <div class="card-hdr">
+            <span class="card-title">Seed Suppliers</span>
+            <a class="card-link">View all</a>
+          </div>
+          <div class="card-body" style="padding-top:8px">
+            <div class="supplier-row">
+              <div class="sup-logo" style="background:#3d7a28">AS</div>
+              <div style="flex:1">
+                <div class="sup-name">Agri Seeds Ltd</div>
+                <div class="sup-meta">Rice varieties · Certified seeds · Pune</div>
+              </div>
+              <div style="text-align:right">
+                <div class="sup-rating">★ 4.6</div>
+                <div class="sup-tag">3 purchases</div>
+              </div>
+            </div>
+            <div class="supplier-row">
+              <div class="sup-logo" style="background:#4a8fcc">SF</div>
+              <div style="flex:1">
+                <div class="sup-name">State Farm Corp</div>
+                <div class="sup-meta">Soybean varieties · Bulk supply · Nashik</div>
+              </div>
+              <div style="text-align:right">
+                <div class="sup-rating">★ 4.2</div>
+                <div class="sup-tag">5 purchases</div>
+              </div>
+            </div>
+            <div class="supplier-row">
+              <div class="sup-logo" style="background:#c79548">NS</div>
+              <div style="flex:1">
+                <div class="sup-name">Nath Seeds</div>
+                <div class="sup-meta">Cotton Bt hybrids · Retail · Aurangabad</div>
+              </div>
+              <div style="text-align:right">
+                <div class="sup-rating">★ 4.0</div>
+                <div class="sup-tag">2 purchases</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEED LOT INFORMATION -->
+        <div class="card">
+          <div class="card-hdr">
+            <span class="card-title">Seed Lot Numbers</span>
+            <a class="card-link">+ Add lot</a>
+          </div>
+          <div class="card-body" style="padding-top:8px">
+            <div class="lot-row">
+              <div class="lot-icon">🌾</div>
+              <div>
+                <div class="lot-id">LOT-SC-2024-0081</div>
+                <div class="lot-sub">Swarna MTU7029 · ANGRAU certified · Kharif 2024</div>
+              </div>
+              <div class="lot-right">
+                <div class="lot-qty">45 kg</div>
+                <span class="badge badge-green" style="font-size:10px">Verified</span>
+              </div>
+            </div>
+            <div class="lot-row">
+              <div class="lot-icon">🫘</div>
+              <div>
+                <div class="lot-id">LOT-SF-2024-0219</div>
+                <div class="lot-sub">JS 9305 · State Farm Corp · Kharif 2024</div>
+              </div>
+              <div class="lot-right">
+                <div class="lot-qty">98 kg</div>
+                <span class="badge badge-green" style="font-size:10px">Verified</span>
+              </div>
+            </div>
+            <div class="lot-row">
+              <div class="lot-icon">🌿</div>
+              <div>
+                <div class="lot-id">LOT-NS-2024-0047</div>
+                <div class="lot-sub">Bunny Bt-II · Nath Seeds · Kharif 2024</div>
+              </div>
+              <div class="lot-right">
+                <div class="lot-qty">1 pkt</div>
+                <span class="badge badge-amber" style="font-size:10px">Pending</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ALERTS & ADVISORIES -->
+        <div class="card">
+          <div class="card-hdr">
+            <span class="card-title">Seed Advisories</span>
+            <span class="badge badge-red" style="font-size:10px">1 action needed</span>
+          </div>
+          <div class="card-body" style="padding-top:10px">
+            <div class="info-box warn">
+              <span class="ib-icon">⚠️</span>
+              <div>
+                <div class="ib-title">Bt Tag Missing — Cotton (Bunny Bt-II)</div>
+                Upload the mandatory Bt cotton seed tag for Lot LOT-NS-2024-0047. Required for compliance and FPO inspection.
+              </div>
+            </div>
+            <div class="info-box amber">
+              <span class="ib-icon">🔬</span>
+              <div>
+                <div class="ib-title">Blast Susceptibility Alert — Rice</div>
+                Swarna MTU7029 is susceptible to rice blast. High humidity (88%) detected. Ensure fungicide treatment is current.
+              </div>
+            </div>
+            <div class="info-box blue">
+              <span class="ib-icon">💡</span>
+              <div>
+                <div class="ib-title">Seed Renewal Reminder</div>
+                For Rabi 2024-25, consider replacing JS 9305 with JS 9560 (higher yield, better pest tolerance) based on block-level trials.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACTIVITY LOG -->
+        <div class="card">
+          <div class="card-hdr">
+            <span class="card-title">Activity Log</span>
+            <a class="card-link">View all</a>
+          </div>
+          <div class="card-body" style="padding-top:8px">
+            <div class="timeline">
+              <div class="tl-item">
+                <div class="tl-dot" style="background:var(--green)"></div>
+                <div class="tl-title">Nursery transplanting completed — Rice Plot A</div>
+                <div class="tl-meta">25-day seedlings transplanted at 20×15 cm spacing</div>
+                <span class="tl-tag" style="background:var(--green-bg);color:var(--green2)">Transplanted</span>
+                <div style="font-size:10.5px;color:var(--muted);margin-top:4px">Jul 1, 2024</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot" style="background:var(--blue)"></div>
+                <div class="tl-title">Germination test result received</div>
+                <div class="tl-meta">Swarna MTU7029 · 94% germination · IARI lab</div>
+                <span class="tl-tag" style="background:var(--blue-bg);color:#2a6594">Lab Result</span>
+                <div style="font-size:10.5px;color:var(--muted);margin-top:4px">Jun 5, 2024</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot" style="background:var(--amber)"></div>
+                <div class="tl-title">Seed treatment applied — Rice</div>
+                <div class="tl-meta">Carbendazim + Trichoderma · 45 kg seed treated</div>
+                <span class="tl-tag" style="background:var(--amber-bg);color:#9a6f2a">Treatment</span>
+                <div style="font-size:10.5px;color:var(--muted);margin-top:4px">Jun 7, 2024</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot" style="background:var(--green)"></div>
+                <div class="tl-title">Seed purchase recorded — All 3 varieties</div>
+                <div class="tl-meta">Rice + Soybean + Cotton · ₹6,200 total</div>
+                <span class="tl-tag" style="background:var(--green-bg);color:var(--green2)">Purchase</span>
+                <div style="font-size:10.5px;color:var(--muted);margin-top:4px">Jun 2, 2024</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>
